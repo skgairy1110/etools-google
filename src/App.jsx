@@ -222,7 +222,7 @@ function HomeView({ onViewChange, showToast }) {
 }
 
 function QRToolView({ onViewChange, user, showToast }) {
-  const [text, setText] = useState('https://etools.lovable.app/');
+  const [text, setText] = useState('');
   const [centerIcon, setCenterIcon] = useState('None');
   const [size, setSize] = useState('512x512');
   const [errorCorrection, setErrorCorrection] = useState('H');
