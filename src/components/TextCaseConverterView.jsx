@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Copy, Eraser, Type, AlignLeft, CaseLower, CaseUpper, Scissors, Hash } from 'lucide-react';
 
-export default function TextCaseConverterView({ onViewChange, showToast }) {
+export default function TextCaseConverterView({ showToast }) {
+  const navigate = useNavigate();
   const [text, setText] = useState('');
 
   const handleConvert = (type) => {
@@ -39,13 +41,10 @@ export default function TextCaseConverterView({ onViewChange, showToast }) {
   ];
 
   return (
-    // Flex-col and min-h calculation ensures it spans the viewport beautifully without scrolling
     <div className="w-full px-4 sm:px-8 pt-4 pb-8 animate-fade-in-up max-w-[1600px] mx-auto flex flex-col" style={{ minHeight: 'calc(100vh - 120px)' }}>
-      
-      {/* Inline Header */}
       <div className="relative flex items-center justify-center mb-8 shrink-0">
         <button 
-          onClick={() => onViewChange('home')}
+          onClick={() => navigate('/')}
           className="absolute left-0 group flex items-center gap-3 text-gray-400 hover:text-white transition-colors text-xs font-semibold tracking-wide uppercase"
         >
           <div className="p-2 rounded-full bg-white/[0.03] group-hover:bg-white/[0.08] transition-all duration-300 border border-white/[0.05]">
@@ -58,16 +57,10 @@ export default function TextCaseConverterView({ onViewChange, showToast }) {
         </h1>
       </div>
 
-      {/* Main Immersive Editor Canvas */}
       <div className="flex-1 relative group flex flex-col w-full max-w-6xl mx-auto">
-        
-        {/* Ambient Glow behind the editor - visible on hover */}
         <div className="absolute -inset-1 bg-gradient-to-r from-rose-500/20 via-fuchsia-500/20 to-orange-500/20 rounded-[2.5rem] blur-2xl opacity-40 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
 
-        {/* Glassmorphic Container */}
         <div className="relative flex-1 flex flex-col bg-[#050505]/90 backdrop-blur-3xl rounded-[2rem] border border-white/[0.08] shadow-2xl overflow-hidden">
-
-          {/* Top Toolbar */}
           <div className="flex justify-between items-center px-6 sm:px-10 py-5 border-b border-white/[0.05] bg-white/[0.01]">
             <div className="flex items-center gap-3">
               <div className="w-2 h-2 rounded-full bg-rose-500 animate-pulse shadow-[0_0_10px_rgba(244,63,94,0.6)]"></div>
@@ -84,7 +77,6 @@ export default function TextCaseConverterView({ onViewChange, showToast }) {
             </div>
           </div>
 
-          {/* Huge, Borderless Textarea Area */}
           <div className="flex-1 p-6 sm:p-10 flex flex-col relative">
             <textarea 
               value={text}
@@ -93,7 +85,6 @@ export default function TextCaseConverterView({ onViewChange, showToast }) {
               className="flex-1 w-full bg-transparent text-xl sm:text-2xl md:text-3xl text-white/90 placeholder-white/10 font-light leading-relaxed focus:outline-none resize-none selection:bg-rose-500/30 transition-all"
             />
 
-            {/* Sleek Floating Status Bar */}
             <div className="absolute bottom-6 right-10 flex items-center gap-6 text-[10px] font-bold tracking-widest text-gray-600 uppercase bg-[#030303]/80 backdrop-blur-md px-4 py-2 rounded-full border border-white/[0.03]">
               <span className={charCount > 0 ? 'text-gray-300' : ''}>{charCount} Chars</span>
               <div className="w-1 h-1 rounded-full bg-white/10"></div>
@@ -101,7 +92,6 @@ export default function TextCaseConverterView({ onViewChange, showToast }) {
             </div>
           </div>
 
-          {/* Bottom Control Dock (Action Buttons) */}
           <div className="p-6 sm:p-8 bg-white/[0.02] border-t border-white/[0.05]">
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
               {actionButtons.map((btn) => {

@@ -1,61 +1,91 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, UploadCloud, X, Download, Archive, Image as ImageIcon, Link2, Settings2, CheckSquare, Square } from 'lucide-react';
 
-export default function ImageCompressorView({ onViewChange, showToast }) {
+export default function ImageCompressorView({ showToast }) {
+  const navigate = useNavigate();
   const [files, setFiles] = useState([]);
   const [selectedIds, setSelectedIds] = useState([]);
   const [activeFileId, setActiveFileId] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef(null);
 
-  // Global Settings
   const [globalFormat, setGlobalFormat] = useState('JPEG');
   const [globalQuality, setGlobalQuality] = useState(75);
   const [globalTargetKb, setGlobalTargetKb] = useState('');
 
-  // Handle File Selection
-  const handleFileSelect = (e) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const newFiles = Array.from(e.target.files).map(file => ({
-        id: Math.random().toString(36).substr(2, 9),
-        file,
-        name: file.name,
-        originalSize: file.size,
-        originalUrl: URL.createObjectURL(file),
-        compressedUrl: null,
-        compressedSize: null,
-        status: 'pending', 
-        settings: {
-          format: globalFormat,
-          quality: globalQuality,
-          targetKb: globalTargetKb,
-          width: 0,
-          height: 0,
-          lockRatio: true
-        }
-      }));
+  // --- NEW: Unified File Processor for both Click & Drag-and-Drop ---
+  const processFiles = (fileList) => {
+    if (!fileList || fileList.length === 0) return;
 
-      // Pre-load image dimensions safely
-      newFiles.forEach(f => {
-        const img = new Image();
-        img.onload = () => {
-          setFiles(prev => prev.map(p => 
-            p.id === f.id 
-              ? { ...p, settings: { ...p.settings, width: img.width, height: img.height }, origWidth: img.width, origHeight: img.height } 
-              : p
-          ));
-        };
-        img.src = f.originalUrl;
-      });
-
-      setFiles(prev => [...prev, ...newFiles]);
-      setSelectedIds(prev => [...prev, ...newFiles.map(f => f.id)]);
-      if (!activeFileId && newFiles.length > 0) setActiveFileId(newFiles[0].id);
-      
-      // Reset input so the same files can be selected again if needed
-      e.target.value = null; 
+    // Filter out non-images
+    const validFiles = Array.from(fileList).filter(file => file.type.startsWith('image/'));
+    
+    if (validFiles.length === 0) {
+      showToast("Please select valid image files (PNG, JPG, WEBP).");
+      return;
     }
+
+    const newFiles = validFiles.map(file => ({
+      id: Math.random().toString(36).substr(2, 9),
+      file,
+      name: file.name,
+      originalSize: file.size,
+      originalUrl: URL.createObjectURL(file),
+      compressedUrl: null,
+      compressedSize: null,
+      status: 'pending', 
+      settings: {
+        format: globalFormat,
+        quality: globalQuality,
+        targetKb: globalTargetKb,
+        width: 0,
+        height: 0,
+        lockRatio: true
+      }
+    }));
+
+    // Pre-load image dimensions safely
+    newFiles.forEach(f => {
+      const img = new Image();
+      img.onload = () => {
+        setFiles(prev => prev.map(p => 
+          p.id === f.id 
+            ? { ...p, settings: { ...p.settings, width: img.width, height: img.height }, origWidth: img.width, origHeight: img.height } 
+            : p
+        ));
+      };
+      img.src = f.originalUrl;
+    });
+
+    setFiles(prev => [...prev, ...newFiles]);
+    setSelectedIds(prev => [...prev, ...newFiles.map(f => f.id)]);
+    if (!activeFileId && newFiles.length > 0) setActiveFileId(newFiles[0].id);
   };
 
+  // --- Drag and Drop Handlers ---
+  const handleFileDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    processFiles(e.dataTransfer.files);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleFileSelect = (e) => {
+    processFiles(e.target.files);
+    e.target.value = null; // Reset input so same files can be selected again if needed
+  };
+
+  // --- Selection Handlers ---
   const toggleSelectAll = () => {
     if (selectedIds.length === files.length) setSelectedIds([]);
     else setSelectedIds(files.map(f => f.id));
@@ -73,7 +103,7 @@ export default function ImageCompressorView({ onViewChange, showToast }) {
     if (activeFileId === id) setActiveFileId(null);
   };
 
-  // Core Compression Engine
+  // --- Compression Engine ---
   const compressSingleImage = async (fileObj, overrides = null) => {
     return new Promise((resolve) => {
       const img = new Image();
@@ -107,38 +137,27 @@ export default function ImageCompressorView({ onViewChange, showToast }) {
           }
         }, mimeType, quality);
       };
-      img.onerror = () => resolve(null); // Prevent hanging on bad images
+      img.onerror = () => resolve(null);
       img.src = fileObj.originalUrl;
     });
   };
 
-  // Smart Engine: Attempts to hit Target KB using binary search
   const processCompression = async (f, overrides) => {
     const targetKb = Number(overrides.targetKb);
-    
-    // PNG ignores quality sliders in HTML5 Canvas, so we skip binary search for it
     if (targetKb && overrides.format !== 'PNG') {
       let minQ = 1;
       let maxQ = 100;
       let bestResult = null;
       const targetBytes = targetKb * 1024;
 
-      // Max 6 attempts to find the perfect quality percentage instantly
       for (let i = 0; i < 6; i++) {
         let testQ = Math.floor((minQ + maxQ) / 2);
         let res = await compressSingleImage(f, { ...overrides, quality: testQ });
-        
         if (!res) break;
         bestResult = res;
-
-        // Stop if we are within 5% of the target size
         if (Math.abs(res.size - targetBytes) / targetBytes < 0.05) break;
-
-        if (res.size > targetBytes) {
-          maxQ = testQ - 1; // Need lower quality
-        } else {
-          minQ = testQ + 1; // Can afford higher quality
-        }
+        if (res.size > targetBytes) maxQ = testQ - 1;
+        else minQ = testQ + 1;
       }
       return bestResult;
     } else {
@@ -154,24 +173,12 @@ export default function ImageCompressorView({ onViewChange, showToast }) {
     
     for (let f of toCompress) {
       setFiles(prev => prev.map(p => p.id === f.id ? { ...p, status: 'compressing' } : p));
-      
-      const overrides = {
-        ...f.settings,
-        format: globalFormat,
-        quality: globalQuality,
-        targetKb: globalTargetKb
-      };
-
+      const overrides = { ...f.settings, format: globalFormat, quality: globalQuality, targetKb: globalTargetKb };
       const result = await processCompression(f, overrides);
       
       if (result) {
         setFiles(prev => prev.map(p => p.id === f.id ? { 
-          ...p, 
-          compressedUrl: result.url, 
-          compressedSize: result.size,
-          status: 'done',
-          settings: overrides, // Save new settings to state
-          name: p.name.replace(/\.[^/.]+$/, "") + "." + result.extension // Update extension
+          ...p, compressedUrl: result.url, compressedSize: result.size, status: 'done', settings: overrides, name: p.name.replace(/\.[^/.]+$/, "") + "." + result.extension 
         } : p));
       } else {
         setFiles(prev => prev.map(p => p.id === f.id ? { ...p, status: 'error' } : p));
@@ -183,18 +190,12 @@ export default function ImageCompressorView({ onViewChange, showToast }) {
   const handleCompressActive = async () => {
     if (!activeFileId) return;
     const f = files.find(x => x.id === activeFileId);
-    
     setFiles(prev => prev.map(p => p.id === f.id ? { ...p, status: 'compressing' } : p));
-    
     const result = await processCompression(f, f.settings);
     
     if (result) {
       setFiles(prev => prev.map(p => p.id === f.id ? { 
-        ...p, 
-        compressedUrl: result.url, 
-        compressedSize: result.size,
-        status: 'done',
-        name: p.name.replace(/\.[^/.]+$/, "") + "." + result.extension
+        ...p, compressedUrl: result.url, compressedSize: result.size, status: 'done', name: p.name.replace(/\.[^/.]+$/, "") + "." + result.extension 
       } : p));
       showToast("Image compressed!");
     } else {
@@ -203,6 +204,7 @@ export default function ImageCompressorView({ onViewChange, showToast }) {
     }
   };
 
+  // --- Download Handlers ---
   const downloadFile = (url, name, e) => {
     if (e) e.stopPropagation();
     const link = document.createElement('a');
@@ -216,9 +218,7 @@ export default function ImageCompressorView({ onViewChange, showToast }) {
   const downloadAll = async () => {
     const doneFiles = files.filter(f => f.status === 'done' && f.compressedUrl);
     if (doneFiles.length === 0) return showToast("No compressed files to download.");
-    
     showToast("Downloading all files...");
-    // Add a sequential delay to prevent the browser from blocking multiple simultaneous downloads
     for (let i = 0; i < doneFiles.length; i++) {
       downloadFile(doneFiles[i].compressedUrl, doneFiles[i].name);
       await new Promise(r => setTimeout(r, 300)); 
@@ -237,10 +237,8 @@ export default function ImageCompressorView({ onViewChange, showToast }) {
 
   return (
     <div className="w-full px-4 sm:px-8 pt-4 pb-12 animate-fade-in-up max-w-[1600px] mx-auto flex flex-col" style={{ minHeight: 'calc(100vh - 120px)' }}>
-      
-      {/* Inline Header */}
       <div className="relative flex items-center justify-center mb-8 shrink-0">
-        <button onClick={() => onViewChange('home')} className="absolute left-0 group flex items-center gap-3 text-gray-400 hover:text-white transition-colors text-xs font-semibold tracking-wide uppercase">
+        <button onClick={() => navigate('/')} className="absolute left-0 group flex items-center gap-3 text-gray-400 hover:text-white transition-colors text-xs font-semibold tracking-wide uppercase">
           <div className="p-2 rounded-full bg-white/[0.03] group-hover:bg-white/[0.08] transition-all duration-300 border border-white/[0.05]">
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
           </div>
@@ -250,11 +248,10 @@ export default function ImageCompressorView({ onViewChange, showToast }) {
             <h1 className="text-2xl sm:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400 tracking-tight">
               Image Compressor
             </h1>
-            <p className="text-gray-500 text-[10px] sm:text-[11px] uppercase tracking-widest mt-1">Compress PNG, JPG, WebP locally in your browser</p>
+            <p className="text-gray-500 text-[10px] sm:text-[11px] uppercase tracking-widest mt-1 hidden sm:block">Compress PNG, JPG, WebP locally in your browser</p>
         </div>
       </div>
 
-      {/* Top Action Bar */}
       <div className="flex flex-wrap items-center justify-between gap-4 mb-6 bg-white/[0.02] p-3 rounded-2xl border border-white/[0.05] backdrop-blur-md">
         <div className="flex gap-3">
           <button onClick={() => fileInputRef.current?.click()} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-all shadow-[0_0_15px_rgba(37,99,235,0.3)] active:scale-95">
@@ -277,11 +274,7 @@ export default function ImageCompressorView({ onViewChange, showToast }) {
       </div>
 
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        
-        {/* Left Panel: File List & Global Settings */}
         <div className="lg:col-span-5 flex flex-col gap-4">
-          
-          {/* Global Batch Settings */}
           {files.length > 0 && (
             <div className="bg-[#050505]/60 backdrop-blur-xl rounded-2xl p-5 border border-white/[0.05] shadow-xl">
                 <div className="flex justify-between items-center mb-5">
@@ -319,12 +312,18 @@ export default function ImageCompressorView({ onViewChange, showToast }) {
             </div>
           )}
 
-          {/* File List */}
-          <div className="flex flex-col gap-2 overflow-y-auto max-h-[400px] pr-2">
+          {/* Unified Dropzone Area for the File List */}
+          <div 
+            onDrop={handleFileDrop}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            className={`flex flex-col gap-2 overflow-y-auto max-h-[400px] pr-2 rounded-2xl transition-all ${isDragging ? 'ring-2 ring-blue-500 ring-dashed bg-blue-500/5 p-2' : ''}`}
+          >
             {files.length === 0 ? (
-                <div className="bg-white/[0.02] border border-white/[0.05] border-dashed rounded-2xl p-10 flex flex-col items-center justify-center text-center h-48">
-                    <ImageIcon className="w-10 h-10 text-gray-600 mb-3" />
-                    <p className="text-sm text-gray-400">No images selected</p>
+                <div onClick={() => fileInputRef.current?.click()} className="bg-white/[0.02] hover:bg-white/[0.04] border border-white/[0.05] hover:border-white/[0.15] border-dashed rounded-2xl p-10 flex flex-col items-center justify-center text-center h-48 cursor-pointer transition-colors">
+                    <ImageIcon className={`w-10 h-10 mb-3 transition-colors ${isDragging ? 'text-blue-400 animate-bounce' : 'text-gray-600'}`} />
+                    <p className="text-sm font-semibold text-white mb-1">Click or drag images here</p>
+                    <p className="text-[10px] text-gray-500 uppercase tracking-widest">PNG, JPG, WEBP</p>
                 </div>
             ) : (
                 files.map(f => {
@@ -372,7 +371,6 @@ export default function ImageCompressorView({ onViewChange, showToast }) {
           </div>
         </div>
 
-        {/* Right Panel: Individual Preview & Settings */}
         <div className="lg:col-span-7 bg-[#050505]/60 backdrop-blur-3xl rounded-[2rem] p-6 sm:p-8 border border-white/[0.05] shadow-2xl flex flex-col h-full min-h-[500px]">
           {!activeFile ? (
              <div className="flex-1 flex flex-col items-center justify-center text-center opacity-50">
@@ -381,8 +379,6 @@ export default function ImageCompressorView({ onViewChange, showToast }) {
              </div>
           ) : (
              <div className="flex flex-col h-full">
-                 
-                 {/* Visual Comparison */}
                  <div className="grid grid-cols-2 gap-4 mb-8">
                      <div className="flex flex-col gap-2">
                          <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest">
@@ -417,7 +413,6 @@ export default function ImageCompressorView({ onViewChange, showToast }) {
                      </div>
                  </div>
 
-                 {/* Individual Settings */}
                  <div className="flex-1 flex flex-col gap-5">
                     <div className="grid grid-cols-2 gap-4">
                         <div>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { QrCode, Star, Mail, Phone, MessageCircle, Upload, Download, ArrowLeft, Save, Activity, Edit2, Trash2, BarChart2 } from 'lucide-react';
 import { doc, deleteDoc, onSnapshot, collection, addDoc, query, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase'; 
@@ -20,7 +21,8 @@ const FacebookIcon = ({ className }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" /></svg>
 );
 
-export default function QRToolView({ onViewChange, user, showToast }) {
+export default function QRToolView({ user, showToast }) {
+  const navigate = useNavigate();
   const [text, setText] = useState('');
   const [centerIcon, setCenterIcon] = useState('None');
   const [size, setSize] = useState('512x512');
@@ -228,45 +230,6 @@ export default function QRToolView({ onViewChange, user, showToast }) {
     setIsSaving(false);
   };
 
-  const handleEdit = (project) => {
-    setProjectName(project.projectName);
-    setEditingId(project.id);
-    const conf = project.config;
-    setText(conf.text || '');
-    setSize(conf.size || '512x512');
-    setErrorCorrection(conf.errorCorrection || 'H');
-    setDarkColor(conf.darkColor || '#000000');
-    setLightColor(conf.lightColor || '#FFFFFF');
-    setMargin(conf.margin || '4');
-    setCenterIcon(conf.centerIcon || 'None');
-    setCustomLogoUrl(conf.customLogoUrl || null);
-    handleGenerate();
-  };
-
-  const handleDelete = async (id) => {
-    try {
-      await deleteDoc(doc(db, 'artifacts', 'etools-app', 'users', user.uid, 'qr_projects', id));
-      showToast("Project deleted.");
-      if (editingId === id) { setEditingId(null); setProjectName(''); }
-    } catch (error) {
-      console.error("Error deleting project:", error);
-    }
-  };
-
-  const handleFileDrop = (e) => { e.preventDefault(); setIsDragging(false); if (e.dataTransfer.files[0]) handleFileUpload(e.dataTransfer.files[0]); };
-  const handleDragOver = (e) => { e.preventDefault(); setIsDragging(true); };
-  const handleDragLeave = (e) => { e.preventDefault(); setIsDragging(false); };
-  const handleFileSelect = (e) => { if (e.target.files[0]) handleFileUpload(e.target.files[0]); };
-  const handleFileUpload = (file) => {
-    if (file.type.startsWith('image/')) {
-      const reader = new FileReader();
-      reader.onload = (event) => { setCustomLogoUrl(event.target.result); setCenterIcon('Custom'); setErrorCorrection('H'); showToast("Custom logo uploaded successfully!"); };
-      reader.readAsDataURL(file);
-    } else {
-      showToast('Please upload an image file (PNG, JPG, SVG).');
-    }
-  };
-
   const icons = [
     { id: 'None', label: 'None', icon: null },
     { id: 'Instagram', label: 'Instagram', icon: InstagramIcon },
@@ -280,11 +243,9 @@ export default function QRToolView({ onViewChange, user, showToast }) {
 
   return (
     <div className="w-full px-4 sm:px-8 pt-4 animate-fade-in-up max-w-[1600px] mx-auto">
-      
-      {/* Inline Header to save vertical space */}
       <div className="relative flex items-center justify-center mb-6">
         <button 
-          onClick={() => onViewChange('home')}
+          onClick={() => navigate('/')}
           className="absolute left-0 group flex items-center gap-2 text-gray-400 hover:text-white transition-colors text-xs font-medium"
         >
           <div className="p-1.5 rounded-full bg-white/[0.03] group-hover:bg-white/[0.08] transition-colors border border-white/[0.05]">
@@ -296,8 +257,6 @@ export default function QRToolView({ onViewChange, user, showToast }) {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch">
-        
-        {/* Left Panel */}
         <div className="bg-white/[0.02] backdrop-blur-xl rounded-2xl p-5 border border-white/[0.05] shadow-2xl flex flex-col gap-4">
           <div>
             <label className="block text-[10px] font-semibold tracking-wide text-gray-300 uppercase mb-2">Data Target</label>
@@ -311,26 +270,21 @@ export default function QRToolView({ onViewChange, user, showToast }) {
 
           <div>
             <label className="block text-[10px] font-semibold tracking-wide text-gray-300 uppercase mb-2">Center Badge</label>
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
               {icons.map((item) => (
                 <div key={item.id} className="relative">
                   {item.id === 'Custom' ? (
                     <div
-                      onDrop={handleFileDrop}
-                      onDragOver={handleDragOver}
-                      onDragLeave={handleDragLeave}
                       onClick={() => fileInputRef.current?.click()}
                       className={`h-full w-full flex flex-col items-center justify-center p-2 rounded-xl border transition-all cursor-pointer min-h-[56px] ${
                         centerIcon === 'Custom' 
                           ? 'bg-cyan-500/20 border-cyan-500/50 text-cyan-300 shadow-[0_0_15px_rgba(34,211,238,0.2)]' 
-                          : isDragging 
-                            ? 'bg-cyan-500/10 border-cyan-500 border-dashed text-cyan-400'
-                            : 'bg-white/[0.02] border-white/[0.05] text-gray-400 hover:bg-white/[0.05] hover:text-white'
+                          : 'bg-white/[0.02] border-white/[0.05] text-gray-400 hover:bg-white/[0.05] hover:text-white'
                       }`}
                     >
-                      <input type="file" ref={fileInputRef} onChange={handleFileSelect} accept="image/*" className="hidden" />
-                      <Upload className={`w-4 h-4 mb-1 ${isDragging ? 'animate-bounce' : ''}`} />
-                      <span className="text-[9px] uppercase tracking-wider">{customLogoUrl ? 'Uploaded' : 'Custom'}</span>
+                      <input type="file" ref={fileInputRef} onChange={(e) => { if(e.target.files[0]) { setCustomLogoUrl(URL.createObjectURL(e.target.files[0])); setCenterIcon('Custom'); setErrorCorrection('H'); }}} accept="image/*" className="hidden" />
+                      <Upload className="w-4 h-4 mb-1" />
+                      <span className="text-[9px] uppercase tracking-wider text-center leading-none">Custom</span>
                     </div>
                   ) : (
                     <button
@@ -346,7 +300,7 @@ export default function QRToolView({ onViewChange, user, showToast }) {
                       ) : (
                         <>
                           {item.icon && <item.icon className="w-4 h-4 mb-1" />}
-                          <span className="text-[9px] uppercase tracking-wider">{item.label}</span>
+                          <span className="text-[9px] uppercase tracking-wider text-center leading-none">{item.label}</span>
                         </>
                       )}
                     </button>
@@ -403,10 +357,7 @@ export default function QRToolView({ onViewChange, user, showToast }) {
           </div>
         </div>
 
-        {/* Right Panel: Preview */}
         <div className="bg-white/[0.01] rounded-2xl p-6 border border-white/[0.05] flex flex-col items-center justify-center relative overflow-hidden w-full h-full min-h-[350px]">
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wNSkiLz48L3N2Zz4=')] [mask-image:linear-gradient(to_bottom,white,transparent)] pointer-events-none"></div>
-          
           {!generatedUrl ? (
              <div className="flex flex-col items-center space-y-3 relative z-10">
                <div className="w-16 h-16 bg-white/[0.02] border border-white/[0.05] rounded-2xl flex items-center justify-center text-gray-600 animate-pulse">

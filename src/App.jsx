@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { QrCode, CheckCircle2 } from 'lucide-react';
 import { onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
 import { auth } from './firebase'; 
@@ -7,8 +8,8 @@ import HomeView from './components/HomeView';
 import QRToolView from './components/QRToolView';
 import TextCaseConverterView from './components/TextCaseConverterView';
 import ImageCompressorView from './components/ImageCompressorView';
+import ImageToTextConverterView from './components/ImageToTextConverterView';
 
-// Custom animations for the "Awwwards" feel
 const globalStyles = `
   @keyframes fadeInUp {
     from { opacity: 0; transform: translateY(30px); }
@@ -29,18 +30,21 @@ const globalStyles = `
   }
   .animation-delay-2000 { animation-delay: 2s; }
   .animation-delay-4000 { animation-delay: 4s; }
-  
-  /* Staggered delays */
-  .delay-100 { animation-delay: 100ms; }
-  .delay-200 { animation-delay: 200ms; }
-  .delay-300 { animation-delay: 300ms; }
-  .delay-400 { animation-delay: 400ms; }
 `;
 
 export default function App() {
-  const [currentView, setCurrentView] = useState('home');
+  return (
+    <Router>
+      <MainApp />
+    </Router>
+  );
+}
+
+function MainApp() {
   const [user, setUser] = useState(null);
   const [toastMessage, setToastMessage] = useState(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     if (!auth) return;
@@ -68,18 +72,20 @@ export default function App() {
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      setCurrentView('home');
+      navigate('/');
       triggerToast("Signed out successfully");
     } catch (error) {
       console.error("Logout failed", error);
     }
   };
 
+  const isHome = location.pathname === '/';
+
   return (
     <div className="min-h-screen bg-[#030303] text-gray-200 font-sans selection:bg-blue-500/30 flex flex-col justify-between relative overflow-x-hidden">
       <style>{globalStyles}</style>
 
-      {/* Awwwards Style Ambient Background Blobs */}
+      {/* Ambient Background Blobs */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden flex justify-center items-center">
         <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-indigo-600/10 blur-[120px] animate-blob mix-blend-screen" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[40vw] h-[40vw] rounded-full bg-emerald-600/10 blur-[120px] animate-blob animation-delay-2000 mix-blend-screen" />
@@ -98,7 +104,7 @@ export default function App() {
 
       {/* Frosted Glass Header */}
       <header className="flex items-center justify-between px-8 py-5 border-b border-white/[0.05] bg-[#030303]/40 backdrop-blur-2xl sticky top-0 z-40 transition-all">
-        <div className="flex items-center gap-3 cursor-pointer group" onClick={() => setCurrentView('home')}>
+        <div className="flex items-center gap-3 cursor-pointer group" onClick={() => navigate('/')}>
           <div className="w-10 h-10 rounded-xl bg-white/[0.03] flex items-center justify-center border border-white/[0.08] group-hover:bg-white/[0.08] group-hover:scale-105 transition-all duration-500 ease-out">
             <QrCode className="w-5 h-5 text-white group-hover:rotate-6 transition-transform duration-500" />
           </div>
@@ -124,22 +130,27 @@ export default function App() {
         )}
       </header>
 
-      {/* Main Content Area */}
+      {/* Main Content Routing */}
       <main className="pb-24 flex-grow relative z-10">
-        {currentView === 'home' && <HomeView onViewChange={setCurrentView} showToast={triggerToast} />}
-        {currentView === 'qr' && <QRToolView onViewChange={setCurrentView} user={user} showToast={triggerToast} />}
-        {currentView === 'text-case' && <TextCaseConverterView onViewChange={setCurrentView} showToast={triggerToast} />}
-        {currentView === 'img-comp' && <ImageCompressorView onViewChange={setCurrentView} showToast={triggerToast} />}
+        <Routes>
+          <Route path="/" element={<HomeView showToast={triggerToast} />} />
+          <Route path="/qr" element={<QRToolView user={user} showToast={triggerToast} />} />
+          <Route path="/text-case" element={<TextCaseConverterView showToast={triggerToast} />} />
+          <Route path="/image-compressor" element={<ImageCompressorView showToast={triggerToast} />} />
+          <Route path="/image-to-text" element={<ImageToTextConverterView showToast={triggerToast} />} />
+        </Routes>
       </main>
 
-      {/* Footer */}
-      <footer className="py-12 border-t border-white/[0.05] flex flex-col items-center justify-center gap-4 text-center bg-[#030303]/60 backdrop-blur-lg relative z-10">
-        <div className="flex items-center gap-2 opacity-50 hover:opacity-100 transition-opacity">
-          <QrCode className="w-4 h-4 text-white" />
-          <span className="text-sm font-bold text-white tracking-widest uppercase">eTOOLS</span>
-        </div>
-        <p className="text-gray-500 text-xs tracking-wide">DESIGNED FOR PERFECTION. NO SIGN-UP REQUIRED.</p>
-      </footer>
+      {/* Footer - Rendered only on Home view */}
+      {isHome && (
+        <footer className="py-12 border-t border-white/[0.05] flex flex-col items-center justify-center gap-4 text-center bg-[#030303]/60 backdrop-blur-lg relative z-10">
+          <div className="flex items-center gap-2 opacity-50 hover:opacity-100 transition-opacity">
+            <QrCode className="w-4 h-4 text-white" />
+            <span className="text-sm font-bold text-white tracking-widest uppercase">eTOOLS</span>
+          </div>
+          <p className="text-gray-500 text-xs tracking-wide">DESIGNED FOR PERFECTION. NO SIGN-UP REQUIRED.</p>
+        </footer>
+      )}
     </div>
   );
 }
