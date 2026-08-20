@@ -9,6 +9,7 @@ import QRToolView from './components/QRToolView';
 import TextCaseConverterView from './components/TextCaseConverterView';
 import ImageCompressorView from './components/ImageCompressorView';
 import ImageToTextConverterView from './components/ImageToTextConverterView';
+import ChartGeneratorView from './components/ChartGeneratorView';
 
 const globalStyles = `
   @keyframes fadeInUp {
@@ -138,6 +139,7 @@ function MainApp() {
           <Route path="/text-case" element={<TextCaseConverterView showToast={triggerToast} />} />
           <Route path="/image-compressor" element={<ImageCompressorView showToast={triggerToast} />} />
           <Route path="/image-to-text" element={<ImageToTextConverterView showToast={triggerToast} />} />
+          <Route path="/chart-generator" element={<ChartGeneratorView user={user} showToast={triggerToast} />} />
         </Routes>
       </main>
 

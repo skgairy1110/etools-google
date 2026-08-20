@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { QrCode, Type, Image, Code, Sparkles, Layers, ScanText } from 'lucide-react';
+import { QrCode, Type, Image, Code, Sparkles, Layers, ScanText, BarChart3 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const toolThemes = [
@@ -50,8 +50,10 @@ export default function HomeView({ showToast }) {
   const [activeCategory, setActiveCategory] = useState("All");
   const categories = ["All", "Generators", "Text Tools", "Media", "Developer"];
 
+  // Add the Chart Generator to your tools list!
   const dummyTools = [
     { title: "QR Code Generator", desc: "Generate tracking-ready QR matrices instantly. Customize colors, logos, and error resilience.", cat: "Generators", active: true, path: '/qr', icon: QrCode },
+    { title: "Chart Generator Pro", desc: "Create stunning, interactive charts with advanced customization and export options.", cat: "Generators", active: true, path: '/chart-generator', icon: BarChart3 },
     { title: "Text Case Converter", desc: "Instantly format your typography architecture. Switch between camel, snake, pascal, and more.", cat: "Text Tools", active: true, path: '/text-case', icon: Type },
     { title: "Image Compressor", desc: "Reduce payload sizes without losing visual fidelity. Smart compression algorithms.", cat: "Media", active: true, path: '/image-compressor', icon: Image },
     { title: "Image to Text (OCR)", desc: "Extract text from images using advanced optical character recognition technology.", cat: "Media", active: true, path: '/image-to-text', icon: ScanText },
