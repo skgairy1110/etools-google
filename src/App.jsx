@@ -10,6 +10,8 @@ import TextCaseConverterView from './components/TextCaseConverterView';
 import ImageCompressorView from './components/ImageCompressorView';
 import ImageToTextConverterView from './components/ImageToTextConverterView';
 import ChartGeneratorView from './components/ChartGeneratorView';
+import ImageUpscalerView from './components/ImageUpscalerView'; 
+import WebsiteImageDownloaderView from './components/WebsiteImageDownloaderView';
 
 const globalStyles = `
   @keyframes fadeInUp {
@@ -140,6 +142,9 @@ function MainApp() {
           <Route path="/image-compressor" element={<ImageCompressorView showToast={triggerToast} />} />
           <Route path="/image-to-text" element={<ImageToTextConverterView showToast={triggerToast} />} />
           <Route path="/chart-generator" element={<ChartGeneratorView user={user} showToast={triggerToast} />} />
+          <Route path="/image-upscaler" element={<ImageUpscalerView showToast={triggerToast} />} />
+          {/* NEW ROUTE BELOW */}
+          <Route path="/image-downloader" element={<WebsiteImageDownloaderView showToast={triggerToast} />} />
         </Routes>
       </main>
 

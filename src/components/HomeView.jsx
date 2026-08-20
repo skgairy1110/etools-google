@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { QrCode, Type, Image, Code, Sparkles, Layers, ScanText, BarChart3 } from 'lucide-react';
+import { QrCode, Type, Image, Code, Sparkles, Layers, ScanText, BarChart3, ImagePlus, Globe } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const toolThemes = [
@@ -50,18 +50,19 @@ export default function HomeView({ showToast }) {
   const [activeCategory, setActiveCategory] = useState("All");
   const categories = ["All", "Generators", "Text Tools", "Media", "Developer"];
 
-  // Add the Chart Generator to your tools list!
+  // Adding the AI Image Upscaler tool
   const dummyTools = [
     { title: "QR Code Generator", desc: "Generate tracking-ready QR matrices instantly. Customize colors, logos, and error resilience.", cat: "Generators", active: true, path: '/qr', icon: QrCode },
     { title: "Chart Generator Pro", desc: "Create stunning, interactive charts with advanced customization and export options.", cat: "Generators", active: true, path: '/chart-generator', icon: BarChart3 },
     { title: "Text Case Converter", desc: "Instantly format your typography architecture. Switch between camel, snake, pascal, and more.", cat: "Text Tools", active: true, path: '/text-case', icon: Type },
     { title: "Image Compressor", desc: "Reduce payload sizes without losing visual fidelity. Smart compression algorithms.", cat: "Media", active: true, path: '/image-compressor', icon: Image },
+    { title: "Website Image Downloader", desc: "Extract and bulk download all visual assets from any website URL, bypassing CORS protections.", cat: "Media", active: true, path: '/image-downloader', icon: Globe }, // <-- NEW TOOL
     { title: "Image to Text (OCR)", desc: "Extract text from images using advanced optical character recognition technology.", cat: "Media", active: true, path: '/image-to-text', icon: ScanText },
+    { title: "AI Image Upscaler", desc: "Enhance and upscale your images up to 16x without losing quality using advanced processing.", cat: "Media", active: true, path: '/image-upscaler', icon: ImagePlus },
     { title: "JSON Formatter", desc: "Beautify, validate, and parse complex JSON data architectures in real-time.", cat: "Developer", active: false, path: '/json-fmt', icon: Code },
     { title: "CSS Shadow Builder", desc: "Craft perfect, buttery-smooth CSS box shadows with an intuitive visual editor.", cat: "Developer", active: false, path: '/css-shadow', icon: Layers },
     { title: "Gradient Generator", desc: "Mix and export beautiful linear and radial CSS gradients for your next project.", cat: "Generators", active: false, path: '/gradient-gen', icon: Sparkles },
   ];
-
   const filteredTools = activeCategory === "All" 
     ? dummyTools 
     : dummyTools.filter(t => t.cat.toLowerCase().includes(activeCategory.toLowerCase()));
