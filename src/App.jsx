@@ -10,8 +10,9 @@ import TextCaseConverterView from './components/TextCaseConverterView';
 import ImageCompressorView from './components/ImageCompressorView';
 import ImageToTextConverterView from './components/ImageToTextConverterView';
 import ChartGeneratorView from './components/ChartGeneratorView';
-import ImageUpscalerView from './components/ImageUpscalerView'; 
+import ImageUpscalerView from './components/ImageUpscalerView';
 import WebsiteImageDownloaderView from './components/WebsiteImageDownloaderView';
+import PdfToImageConverterView from './components/PdfToImageConverterView';
 
 const globalStyles = `
   @keyframes fadeInUp {
@@ -106,29 +107,30 @@ function MainApp() {
       )}
 
       {/* Frosted Glass Header */}
-      <header className="flex items-center justify-between px-8 py-5 border-b border-white/[0.05] bg-[#030303]/40 backdrop-blur-2xl sticky top-0 z-40 transition-all">
-        <div className="flex items-center gap-3 cursor-pointer group" onClick={() => navigate('/')}>
-          <div className="w-10 h-10 rounded-xl bg-white/[0.03] flex items-center justify-center border border-white/[0.08] group-hover:bg-white/[0.08] group-hover:scale-105 transition-all duration-500 ease-out">
-            <QrCode className="w-5 h-5 text-white group-hover:rotate-6 transition-transform duration-500" />
+      <header className="flex items-center justify-between px-4 sm:px-8 py-4 sm:py-5 border-b border-white/[0.05] bg-[#030303]/40 backdrop-blur-2xl sticky top-0 z-40 transition-all">
+        <div className="flex items-center gap-2 sm:gap-3 cursor-pointer group" onClick={() => navigate('/')}>
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-white/[0.03] flex items-center justify-center border border-white/[0.08] group-hover:bg-white/[0.08] group-hover:scale-105 transition-all duration-500 ease-out">
+            <QrCode className="w-4 h-4 sm:w-5 sm:h-5 text-white group-hover:rotate-6 transition-transform duration-500" />
           </div>
-          <span className="text-xl font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white to-white/60">
+          <span className="text-lg sm:text-xl font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white to-white/60">
             eTOOLS
           </span>
         </div>
         
         {user ? (
-          <div className="flex items-center gap-5">
-            <div className="flex items-center gap-3 bg-white/[0.03] border border-white/[0.05] py-1.5 px-1.5 rounded-full pr-4">
-              <img src={user.photoURL} alt="Avatar" className="w-8 h-8 rounded-full object-cover" />
-              <span className="text-sm font-medium text-gray-300 hidden sm:block">{user.displayName}</span>
+          <div className="flex items-center gap-3 sm:gap-5">
+            <div className="flex items-center gap-2 sm:gap-3 bg-white/[0.03] border border-white/[0.05] py-1 px-1 sm:py-1.5 sm:px-1.5 rounded-full pr-3 sm:pr-4">
+              <img src={user.photoURL} alt="Avatar" className="w-6 h-6 sm:w-8 sm:h-8 rounded-full object-cover" />
+              <span className="text-xs sm:text-sm font-medium text-gray-300 hidden sm:block">{user.displayName}</span>
             </div>
-            <button onClick={handleLogout} className="text-sm font-medium text-gray-400 hover:text-white transition-colors">
+            <button onClick={handleLogout} className="text-xs sm:text-sm font-medium text-gray-400 hover:text-white transition-colors">
               Sign out
             </button>
           </div>
         ) : (
-          <button onClick={handleLogin} className="relative group overflow-hidden text-sm bg-white text-black px-6 py-2.5 rounded-full font-semibold transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(255,255,255,0.15)] hover:shadow-[0_0_30px_rgba(255,255,255,0.3)]">
-            <span className="relative z-10">Sign in with Google</span>
+          <button onClick={handleLogin} className="relative group overflow-hidden text-xs sm:text-sm bg-white text-black px-4 sm:px-6 py-2 sm:py-2.5 rounded-full font-semibold transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(255,255,255,0.15)] hover:shadow-[0_0_30px_rgba(255,255,255,0.3)]">
+            <span className="relative z-10 hidden sm:inline">Sign in with Google</span>
+            <span className="relative z-10 sm:hidden">Sign In</span>
           </button>
         )}
       </header>
@@ -143,8 +145,8 @@ function MainApp() {
           <Route path="/image-to-text" element={<ImageToTextConverterView showToast={triggerToast} />} />
           <Route path="/chart-generator" element={<ChartGeneratorView user={user} showToast={triggerToast} />} />
           <Route path="/image-upscaler" element={<ImageUpscalerView showToast={triggerToast} />} />
-          {/* NEW ROUTE BELOW */}
           <Route path="/image-downloader" element={<WebsiteImageDownloaderView showToast={triggerToast} />} />
+          <Route path="/pdf-to-image" element={<PdfToImageConverterView showToast={triggerToast} />} />
         </Routes>
       </main>
 
@@ -155,7 +157,7 @@ function MainApp() {
             <QrCode className="w-4 h-4 text-white" />
             <span className="text-sm font-bold text-white tracking-widest uppercase">eTOOLS</span>
           </div>
-          <p className="text-gray-500 text-xs tracking-wide">DESIGNED FOR PERFECTION. NO SIGN-UP REQUIRED.</p>
+          <p className="text-gray-500 text-xs tracking-wide px-4">DESIGNED FOR PERFECTION. NO SIGN-UP REQUIRED.</p>
         </footer>
       )}
     </div>
