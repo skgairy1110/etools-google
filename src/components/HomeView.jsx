@@ -71,6 +71,7 @@ export default function HomeView({ showToast }) {
     { title: "AI Grammar Checker", desc: "Check your text for grammar, spelling, and punctuation errors with advanced AI analysis.", cat: "Text Tools", active: true, path: '/grammar-checker', icon: SpellCheck }, // <-- NEW TOOL
     { title: "GIF Compressor Pro", desc: "Advanced bulk compression for GIF media. Reduce file size while retaining quality and aspect ratios.", cat: "Media", active: true, path: '/gif-compressor', icon: FileArchive }, // <-- NEW TOOL
     { title: "Image Format Converter", desc: "Batch convert images between PNG, JPG, and WebP. Full control over quality and transparency.", cat: "Media", active: true, path: '/image-converter', icon: RefreshCw }, // <-- NEW TOOL
+    { title: "PDF to Word", desc: "Convert PDF documents into editable Word (.docx) files. (Requires backend integration for layout parsing).", cat: "PDF", active: true, path: '/pdf-to-word', icon: FileText }, // <-- NEW TOOL
   ];
 
   const filteredTools = activeCategory === "All" 
