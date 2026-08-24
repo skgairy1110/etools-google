@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Palette /* ... other icons */ } from 'lucide-react';
+import { FileImage /* ... other icons */ } from 'lucide-react';
 
 const toolThemes = [
   {
@@ -68,6 +69,7 @@ export default function HomeView({ showToast }) {
     { title: "CSS Shadow Builder", desc: "Craft perfect, buttery-smooth CSS box shadows with an intuitive visual editor.", cat: "Developer", active: false, path: '/css-shadow', icon: Layers },
     { title: "Gradient Generator", desc: "Mix and export beautiful linear and radial CSS gradients for your next project.", cat: "Generators", active: false, path: '/gradient-gen', icon: Sparkles },
     { title: "AI Color Genie", desc: "Generate perfect, UI-ready color palettes using AI based on cinematic themes or moods.", cat: "Generators", active: true, path: '/ai-colors', icon: Palette }, // <-- NEW TOOL
+    { title: "Image to PDF", desc: "Convert multiple images into a single, high-quality A4 PDF document instantly.", cat: "PDF", active: true, path: '/image-to-pdf', icon: FileImage }, // <-- NEW TOOL
   ];
 
   const filteredTools = activeCategory === "All" 
