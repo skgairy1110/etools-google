@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
   Image as ImageIcon, QrCode, Type, Minimize2, FileText, 
   BarChart2, BarChart3, Sparkles, Download, Globe, 
-  ScanText, ImagePlus, Code, Layers, Image, Palette, FileImage, SpellCheck
+  ScanText, ImagePlus, Code, Layers, Image, Palette, FileImage, SpellCheck, FileArchive
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -63,12 +63,13 @@ export default function HomeView({ showToast }) {
     { title: "Website Image Downloader", desc: "Extract and bulk download all visual assets from any website URL, bypassing CORS protections.", cat: "Media", active: true, path: '/image-downloader', icon: Globe },
     { title: "Image to Text (OCR)", desc: "Extract text from images using advanced optical character recognition technology.", cat: "Media", active: true, path: '/image-to-text', icon: ScanText },
     { title: "AI Image Upscaler", desc: "Enhance and upscale your images up to 16x without losing quality using advanced processing.", cat: "Media", active: true, path: '/image-upscaler', icon: ImagePlus },
-    { title: "JSON Formatter", desc: "Beautify, validate, and parse complex JSON data architectures in real-time.", cat: "Developer", active: false, path: '/json-fmt', icon: Code },
-    { title: "CSS Shadow Builder", desc: "Craft perfect, buttery-smooth CSS box shadows with an intuitive visual editor.", cat: "Developer", active: false, path: '/css-shadow', icon: Layers },
-    { title: "Gradient Generator", desc: "Mix and export beautiful linear and radial CSS gradients for your next project.", cat: "Generators", active: false, path: '/gradient-gen', icon: Sparkles },
+   // { title: "JSON Formatter", desc: "Beautify, validate, and parse complex JSON data architectures in real-time.", cat: "Developer", active: false, path: '/json-fmt', icon: Code },
+   // { title: "CSS Shadow Builder", desc: "Craft perfect, buttery-smooth CSS box shadows with an intuitive visual editor.", cat: "Developer", active: false, path: '/css-shadow', icon: Layers },
+   // { title: "Gradient Generator", desc: "Mix and export beautiful linear and radial CSS gradients for your next project.", cat: "Generators", active: false, path: '/gradient-gen', icon: Sparkles },
     { title: "AI Color Genie", desc: "Generate perfect, UI-ready color palettes using AI based on cinematic themes or moods.", cat: "Generators", active: true, path: '/ai-colors', icon: Palette }, // <-- NEW TOOL
     { title: "Image to PDF", desc: "Convert multiple images into a single, high-quality A4 PDF document instantly.", cat: "PDF", active: true, path: '/image-to-pdf', icon: FileImage }, // <-- NEW TOOL
     { title: "AI Grammar Checker", desc: "Check your text for grammar, spelling, and punctuation errors with advanced AI analysis.", cat: "Text Tools", active: true, path: '/grammar-checker', icon: SpellCheck }, // <-- NEW TOOL
+    { title: "GIF Compressor Pro", desc: "Advanced bulk compression for GIF media. Reduce file size while retaining quality and aspect ratios.", cat: "Media", active: true, path: '/gif-compressor', icon: FileArchive }, // <-- NEW TOOL
   ];
 
   const filteredTools = activeCategory === "All" 
