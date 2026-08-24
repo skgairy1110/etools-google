@@ -19,6 +19,8 @@ import GrammarCheckerView from './components/GrammarCheckerView';
 import GifCompressorView from './components/GifCompressorView';
 import ImageFormatConverterView from './components/ImageFormatConverterView';
 import PdfToWordConverterView from './components/PdfToWordConverterView';
+import PlagiarismCheckerView from './components/PlagiarismCheckerView';
+
 
 const globalStyles = `
   @keyframes fadeInUp {
@@ -159,6 +161,7 @@ function MainApp() {
           <Route path="/gif-compressor" element={<GifCompressorView showToast={triggerToast} />} />
           <Route path="/image-converter" element={<ImageFormatConverterView showToast={triggerToast} />} />
           <Route path="/pdf-to-word" element={<PdfToWordConverterView showToast={triggerToast} />} />
+          <Route path="/plagiarism-checker" element={<PlagiarismCheckerView showToast={triggerToast} />} />
         </Routes>
       </main>
 

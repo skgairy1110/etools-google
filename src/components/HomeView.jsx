@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { 
   Image as ImageIcon, QrCode, Type, Minimize2, FileText, 
   BarChart2, BarChart3, Sparkles, Download, Globe, 
-  ScanText, ImagePlus, Code, Layers, Image, Palette, FileImage, SpellCheck, FileArchive, RefreshCw
+  ScanText, ImagePlus, Code, Layers, Image, Palette, FileImage, 
+  SpellCheck, FileArchive, RefreshCw, ShieldCheck, UserCheck
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -72,6 +73,7 @@ export default function HomeView({ showToast }) {
     { title: "GIF Compressor Pro", desc: "Advanced bulk compression for GIF media. Reduce file size while retaining quality and aspect ratios.", cat: "Media", active: true, path: '/gif-compressor', icon: FileArchive }, // <-- NEW TOOL
     { title: "Image Format Converter", desc: "Batch convert images between PNG, JPG, and WebP. Full control over quality and transparency.", cat: "Media", active: true, path: '/image-converter', icon: RefreshCw }, // <-- NEW TOOL
     { title: "PDF to Word", desc: "Convert PDF documents into editable Word (.docx) files. (Requires backend integration for layout parsing).", cat: "PDF", active: true, path: '/pdf-to-word', icon: FileText }, // <-- NEW TOOL
+    { title: "Plagiarism Checker", desc: "100% Accurate, free & Trustworthy. Check your content for plagiarism against billions of web pages.", cat: "Text Tools", active: true, path: '/plagiarism-checker', icon: ShieldCheck }, // <-- NEW TOOL
   ];
 
   const filteredTools = activeCategory === "All" 
