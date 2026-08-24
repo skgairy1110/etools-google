@@ -13,6 +13,7 @@ import ChartGeneratorView from './components/ChartGeneratorView';
 import ImageUpscalerView from './components/ImageUpscalerView';
 import WebsiteImageDownloaderView from './components/WebsiteImageDownloaderView';
 import PdfToImageConverterView from './components/PdfToImageConverterView';
+import AIColorPairView from './components/AIColorPairView';
 
 const globalStyles = `
   @keyframes fadeInUp {
@@ -147,6 +148,7 @@ function MainApp() {
           <Route path="/image-upscaler" element={<ImageUpscalerView showToast={triggerToast} />} />
           <Route path="/image-downloader" element={<WebsiteImageDownloaderView showToast={triggerToast} />} />
           <Route path="/pdf-to-image" element={<PdfToImageConverterView showToast={triggerToast} />} />
+          <Route path="/ai-colors" element={<AIColorPairView showToast={triggerToast} />} />
         </Routes>
       </main>
 

@@ -5,6 +5,7 @@ import {
   ScanText, ImagePlus, Code, Layers, Image 
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { Palette /* ... other icons */ } from 'lucide-react';
 
 const toolThemes = [
   {
@@ -66,6 +67,7 @@ export default function HomeView({ showToast }) {
     { title: "JSON Formatter", desc: "Beautify, validate, and parse complex JSON data architectures in real-time.", cat: "Developer", active: false, path: '/json-fmt', icon: Code },
     { title: "CSS Shadow Builder", desc: "Craft perfect, buttery-smooth CSS box shadows with an intuitive visual editor.", cat: "Developer", active: false, path: '/css-shadow', icon: Layers },
     { title: "Gradient Generator", desc: "Mix and export beautiful linear and radial CSS gradients for your next project.", cat: "Generators", active: false, path: '/gradient-gen', icon: Sparkles },
+    { title: "AI Color Genie", desc: "Generate perfect, UI-ready color palettes using AI based on cinematic themes or moods.", cat: "Generators", active: true, path: '/ai-colors', icon: Palette }, // <-- NEW TOOL
   ];
 
   const filteredTools = activeCategory === "All" 
