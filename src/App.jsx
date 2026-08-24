@@ -15,6 +15,7 @@ import WebsiteImageDownloaderView from './components/WebsiteImageDownloaderView'
 import PdfToImageConverterView from './components/PdfToImageConverterView';
 import AIColorPairView from './components/AIColorPairView';
 import ImageToPdfConverterView from './components/ImageToPdfConverterView';
+import GrammarCheckerView from './components/GrammarCheckerView';
 
 const globalStyles = `
   @keyframes fadeInUp {
@@ -151,6 +152,7 @@ function MainApp() {
           <Route path="/pdf-to-image" element={<PdfToImageConverterView showToast={triggerToast} />} />
           <Route path="/ai-colors" element={<AIColorPairView showToast={triggerToast} />} />
           <Route path="/image-to-pdf" element={<ImageToPdfConverterView showToast={triggerToast} />} />
+          <Route path="/grammar-checker" element={<GrammarCheckerView showToast={triggerToast} />} />
         </Routes>
       </main>
 
