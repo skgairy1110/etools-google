@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
   Image as ImageIcon, QrCode, Type, Minimize2, FileText, 
   BarChart2, BarChart3, Sparkles, Download, Globe, 
-  ScanText, ImagePlus, Code, Layers, Image, Palette, FileImage, SpellCheck, FileArchive
+  ScanText, ImagePlus, Code, Layers, Image, Palette, FileImage, SpellCheck, FileArchive, RefreshCw
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -70,6 +70,7 @@ export default function HomeView({ showToast }) {
     { title: "Image to PDF", desc: "Convert multiple images into a single, high-quality A4 PDF document instantly.", cat: "PDF", active: true, path: '/image-to-pdf', icon: FileImage }, // <-- NEW TOOL
     { title: "AI Grammar Checker", desc: "Check your text for grammar, spelling, and punctuation errors with advanced AI analysis.", cat: "Text Tools", active: true, path: '/grammar-checker', icon: SpellCheck }, // <-- NEW TOOL
     { title: "GIF Compressor Pro", desc: "Advanced bulk compression for GIF media. Reduce file size while retaining quality and aspect ratios.", cat: "Media", active: true, path: '/gif-compressor', icon: FileArchive }, // <-- NEW TOOL
+    { title: "Image Format Converter", desc: "Batch convert images between PNG, JPG, and WebP. Full control over quality and transparency.", cat: "Media", active: true, path: '/image-converter', icon: RefreshCw }, // <-- NEW TOOL
   ];
 
   const filteredTools = activeCategory === "All" 
