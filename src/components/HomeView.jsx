@@ -77,6 +77,7 @@ export default function HomeView({ showToast }) {
     { title: "HTML to PDF/JPG", desc: "Convert HTML content or webpages directly to high-quality PDF or JPG images without server uploads.", cat: "PDF", active: true, path: '/html-to-pdf', icon: FileCode2 }, // <-- NEW TOOL
     { title: "PDF Compressor", desc: "Reduce the file size of your PDF documents with customizable compression levels.", cat: "PDF", active: true, path: '/pdf-compressor', icon: Minimize2 }, // <-- NEW TOOL
     { title: "Video to GIF Converter", desc: "Convert video files into animated GIFs. Customize resolution and frame rates for optimal file size.", cat: "Media", active: true, path: '/video-to-gif', icon: PlaySquare }, // <-- NEW TOOL
+    { title: "Background Remover", desc: "Instantly remove image backgrounds using advanced AI. Runs entirely locally in your browser for absolute privacy.", cat: "Media", active: true, path: '/remove-background', icon: Layers }, // <-- NEW TOOL
   ];
 
   const filteredTools = activeCategory === "All" 

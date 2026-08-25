@@ -24,6 +24,7 @@ import HtmlToPdfConverterView from './components/HtmlToPdfConverterView';
 import PdfCompressorView from './components/PdfCompressorView';
 import NotFoundView from './components/NotFoundView';
 import VideoToGifView from './components/VideoToGifView';
+import RemoveBackgroundView from './components/RemoveBackgroundView';
 
 
 const globalStyles = `
@@ -170,6 +171,7 @@ function MainApp() {
           <Route path="/html-to-pdf" element={<HtmlToPdfConverterView showToast={triggerToast} />} />
           <Route path="/pdf-compressor" element={<PdfCompressorView showToast={triggerToast} />} />
           <Route path="/video-to-gif" element={<VideoToGifView showToast={triggerToast} />} />
+          <Route path="/remove-background" element={<RemoveBackgroundView showToast={triggerToast} />} />
           
         </Routes>
       </main>
