@@ -22,6 +22,8 @@ import PdfToWordConverterView from './components/PdfToWordConverterView';
 import PlagiarismCheckerView from './components/PlagiarismCheckerView';
 import HtmlToPdfConverterView from './components/HtmlToPdfConverterView';
 import PdfCompressorView from './components/PdfCompressorView';
+import NotFoundView from './components/NotFoundView';
+import VideoToGifView from './components/VideoToGifView';
 
 
 const globalStyles = `
@@ -148,6 +150,7 @@ function MainApp() {
       {/* Main Content Routing */}
       <main className="pb-24 flex-grow relative z-10">
         <Routes>
+          <Route path="*" element={<NotFoundView />} />
           <Route path="/" element={<HomeView showToast={triggerToast} />} />
           <Route path="/qr" element={<QRToolView user={user} showToast={triggerToast} />} />
           <Route path="/text-case" element={<TextCaseConverterView showToast={triggerToast} />} />
@@ -166,6 +169,8 @@ function MainApp() {
           <Route path="/plagiarism-checker" element={<PlagiarismCheckerView showToast={triggerToast} />} />
           <Route path="/html-to-pdf" element={<HtmlToPdfConverterView showToast={triggerToast} />} />
           <Route path="/pdf-compressor" element={<PdfCompressorView showToast={triggerToast} />} />
+          <Route path="/video-to-gif" element={<VideoToGifView showToast={triggerToast} />} />
+          
         </Routes>
       </main>
 

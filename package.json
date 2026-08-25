@@ -13,6 +13,7 @@
     "@tailwindcss/vite": "^4.3.3",
     "docx": "^9.7.1",
     "firebase": "^12.17.1",
+    "gifshot": "^0.4.5",
     "html2pdf.js": "^0.14.0",
     "jspdf": "^4.2.1",
     "jszip": "^3.10.1",

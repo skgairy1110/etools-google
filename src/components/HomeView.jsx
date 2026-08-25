@@ -3,7 +3,7 @@ import {
   Image as ImageIcon, QrCode, Type, Minimize2, FileText, 
   BarChart2, BarChart3, Sparkles, Download, Globe, 
   ScanText, ImagePlus, Code, Layers, Image, Palette, FileImage, 
-  SpellCheck, FileArchive, RefreshCw, ShieldCheck, UserCheck, FileCode2
+  SpellCheck, FileArchive, RefreshCw, ShieldCheck, UserCheck, FileCode2, PlaySquare
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -76,6 +76,7 @@ export default function HomeView({ showToast }) {
     { title: "Plagiarism Checker", desc: "100% Accurate, free & Trustworthy. Check your content for plagiarism against billions of web pages.", cat: "Text Tools", active: true, path: '/plagiarism-checker', icon: ShieldCheck }, // <-- NEW TOOL
     { title: "HTML to PDF/JPG", desc: "Convert HTML content or webpages directly to high-quality PDF or JPG images without server uploads.", cat: "PDF", active: true, path: '/html-to-pdf', icon: FileCode2 }, // <-- NEW TOOL
     { title: "PDF Compressor", desc: "Reduce the file size of your PDF documents with customizable compression levels.", cat: "PDF", active: true, path: '/pdf-compressor', icon: Minimize2 }, // <-- NEW TOOL
+    { title: "Video to GIF Converter", desc: "Convert video files into animated GIFs. Customize resolution and frame rates for optimal file size.", cat: "Media", active: true, path: '/video-to-gif', icon: PlaySquare }, // <-- NEW TOOL
   ];
 
   const filteredTools = activeCategory === "All" 
