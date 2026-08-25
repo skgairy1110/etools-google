@@ -20,6 +20,8 @@ import GifCompressorView from './components/GifCompressorView';
 import ImageFormatConverterView from './components/ImageFormatConverterView';
 import PdfToWordConverterView from './components/PdfToWordConverterView';
 import PlagiarismCheckerView from './components/PlagiarismCheckerView';
+import HtmlToPdfConverterView from './components/HtmlToPdfConverterView';
+import PdfCompressorView from './components/PdfCompressorView';
 
 
 const globalStyles = `
@@ -162,6 +164,8 @@ function MainApp() {
           <Route path="/image-converter" element={<ImageFormatConverterView showToast={triggerToast} />} />
           <Route path="/pdf-to-word" element={<PdfToWordConverterView showToast={triggerToast} />} />
           <Route path="/plagiarism-checker" element={<PlagiarismCheckerView showToast={triggerToast} />} />
+          <Route path="/html-to-pdf" element={<HtmlToPdfConverterView showToast={triggerToast} />} />
+          <Route path="/pdf-compressor" element={<PdfCompressorView showToast={triggerToast} />} />
         </Routes>
       </main>
 
