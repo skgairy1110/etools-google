@@ -4,7 +4,7 @@ import {
   BarChart2, BarChart3, Sparkles, Download, Globe, 
   ScanText, ImagePlus, Code, Layers, Image, Palette, FileImage, 
   SpellCheck, FileArchive, RefreshCw, ShieldCheck, UserCheck, FileCode2, PlaySquare,
-  FileJson
+  FileJson, Cloud
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -81,6 +81,7 @@ export default function HomeView({ showToast }) {
     { title: "Background Remover", desc: "Instantly remove image backgrounds using advanced AI. Runs entirely locally in your browser for absolute privacy.", cat: "Media", active: true, path: '/remove-background', icon: Layers }, // <-- NEW TOOL
     { title: "JSON Formatter", desc: "Instantly beautify, minify, and validate complex JSON data. Find syntax errors easily with strict formatting rules.", cat: "Developer", active: true, path: '/json-formatter', icon: FileJson }, // <-- NEW TOOL
     { title: "Word to PDF", desc: "Batch convert DOCX, DOC, TXT, and RTF files to PDF instantly. 100% client-side to ensure privacy.", cat: "PDF", active: true, path: '/word-to-pdf', icon: FileText }, // <-- NEW TOOL
+    { title: "Cloud Generator Studio", desc: "Create interactive word clouds, logo grids, and icon clusters. Customize layouts, shapes, and export instantly.", cat: "Design", active: true, path: '/cloud-generator', icon: Cloud }, // <-- NEW TOOL
   ];
 
   const filteredTools = activeCategory === "All" 

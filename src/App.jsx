@@ -27,6 +27,7 @@ import VideoToGifView from './components/VideoToGifView';
 import RemoveBackgroundView from './components/RemoveBackgroundView';
 import JsonFormatterView from './components/JsonFormatterView';
 import WordToPdfView from './components/WordToPdfView';
+import CloudGeneratorView from './components/CloudGeneratorView';
 
 
 const globalStyles = `
@@ -176,6 +177,7 @@ function MainApp() {
           <Route path="/remove-background" element={<RemoveBackgroundView showToast={triggerToast} />} />
           <Route path="/json-formatter" element={<JsonFormatterView showToast={triggerToast} />} />
           <Route path="/word-to-pdf" element={<WordToPdfView showToast={triggerToast} />} />
+          <Route path="/cloud-generator" element={<CloudGeneratorView showToast={triggerToast} />} />
           
         </Routes>
       </main>
