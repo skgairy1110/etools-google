@@ -3,7 +3,8 @@ import {
   Image as ImageIcon, QrCode, Type, Minimize2, FileText, 
   BarChart2, BarChart3, Sparkles, Download, Globe, 
   ScanText, ImagePlus, Code, Layers, Image, Palette, FileImage, 
-  SpellCheck, FileArchive, RefreshCw, ShieldCheck, UserCheck, FileCode2, PlaySquare
+  SpellCheck, FileArchive, RefreshCw, ShieldCheck, UserCheck, FileCode2, PlaySquare,
+  FileJson
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -64,7 +65,7 @@ export default function HomeView({ showToast }) {
     { title: "Website Image Downloader", desc: "Extract and bulk download all visual assets from any website URL, bypassing CORS protections.", cat: "Media", active: true, path: '/image-downloader', icon: Globe },
     { title: "Image to Text (OCR)", desc: "Extract text from images using advanced optical character recognition technology.", cat: "Media", active: true, path: '/image-to-text', icon: ScanText },
     { title: "AI Image Upscaler", desc: "Enhance and upscale your images up to 16x without losing quality using advanced processing.", cat: "Media", active: true, path: '/image-upscaler', icon: ImagePlus },
-   // { title: "JSON Formatter", desc: "Beautify, validate, and parse complex JSON data architectures in real-time.", cat: "Developer", active: false, path: '/json-fmt', icon: Code },
+    { title: "JSON Formatter", desc: "Beautify, validate, and parse complex JSON data architectures in real-time.", cat: "Developer", active: true, path: '/json-formatter', icon: Code },
    // { title: "CSS Shadow Builder", desc: "Craft perfect, buttery-smooth CSS box shadows with an intuitive visual editor.", cat: "Developer", active: false, path: '/css-shadow', icon: Layers },
    // { title: "Gradient Generator", desc: "Mix and export beautiful linear and radial CSS gradients for your next project.", cat: "Generators", active: false, path: '/gradient-gen', icon: Sparkles },
     { title: "AI Color Genie", desc: "Generate perfect, UI-ready color palettes using AI based on cinematic themes or moods.", cat: "Generators", active: true, path: '/ai-colors', icon: Palette }, // <-- NEW TOOL
@@ -78,6 +79,8 @@ export default function HomeView({ showToast }) {
     { title: "PDF Compressor", desc: "Reduce the file size of your PDF documents with customizable compression levels.", cat: "PDF", active: true, path: '/pdf-compressor', icon: Minimize2 }, // <-- NEW TOOL
     { title: "Video to GIF Converter", desc: "Convert video files into animated GIFs. Customize resolution and frame rates for optimal file size.", cat: "Media", active: true, path: '/video-to-gif', icon: PlaySquare }, // <-- NEW TOOL
     { title: "Background Remover", desc: "Instantly remove image backgrounds using advanced AI. Runs entirely locally in your browser for absolute privacy.", cat: "Media", active: true, path: '/remove-background', icon: Layers }, // <-- NEW TOOL
+    { title: "JSON Formatter", desc: "Instantly beautify, minify, and validate complex JSON data. Find syntax errors easily with strict formatting rules.", cat: "Developer", active: true, path: '/json-formatter', icon: FileJson }, // <-- NEW TOOL
+    { title: "Word to PDF", desc: "Batch convert DOCX, DOC, TXT, and RTF files to PDF instantly. 100% client-side to ensure privacy.", cat: "PDF", active: true, path: '/word-to-pdf', icon: FileText }, // <-- NEW TOOL
   ];
 
   const filteredTools = activeCategory === "All" 

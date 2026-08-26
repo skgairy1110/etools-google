@@ -25,6 +25,8 @@ import PdfCompressorView from './components/PdfCompressorView';
 import NotFoundView from './components/NotFoundView';
 import VideoToGifView from './components/VideoToGifView';
 import RemoveBackgroundView from './components/RemoveBackgroundView';
+import JsonFormatterView from './components/JsonFormatterView';
+import WordToPdfView from './components/WordToPdfView';
 
 
 const globalStyles = `
@@ -172,6 +174,8 @@ function MainApp() {
           <Route path="/pdf-compressor" element={<PdfCompressorView showToast={triggerToast} />} />
           <Route path="/video-to-gif" element={<VideoToGifView showToast={triggerToast} />} />
           <Route path="/remove-background" element={<RemoveBackgroundView showToast={triggerToast} />} />
+          <Route path="/json-formatter" element={<JsonFormatterView showToast={triggerToast} />} />
+          <Route path="/word-to-pdf" element={<WordToPdfView showToast={triggerToast} />} />
           
         </Routes>
       </main>
