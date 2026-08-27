@@ -4,7 +4,7 @@ import {
   BarChart2, BarChart3, Sparkles, Download, Globe, 
   ScanText, ImagePlus, Code, Layers, Image, Palette, FileImage, 
   SpellCheck, FileArchive, RefreshCw, ShieldCheck, UserCheck, FileCode2, PlaySquare,
-  FileJson, Cloud, Mail
+  FileJson, Cloud, Mail, Camera
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -83,6 +83,7 @@ export default function HomeView({ showToast }) {
     { title: "Word to PDF", desc: "Batch convert DOCX, DOC, TXT, and RTF files to PDF instantly. 100% client-side to ensure privacy.", cat: "PDF", active: true, path: '/word-to-pdf', icon: FileText }, // <-- NEW TOOL
     { title: "Cloud Generator Studio", desc: "Create interactive word clouds, logo grids, and icon clusters. Customize layouts, shapes, and export instantly.", cat: "Design", active: true, path: '/cloud-generator', icon: Cloud }, // <-- NEW TOOL
     { title: "AI Email Builder", desc: "Turn a plain-language prompt into production-ready responsive HTML email templates instantly.", cat: "Marketing", active: true, path: '/ai-email-builder', icon: Mail },
+    { title: "Website Screenshot", desc: "Capture high-resolution full-page or viewport screenshots in desktop, tablet, or mobile frames.", cat: "Utilities", active: true, path: '/website-screenshot', icon: Camera },
   ];
 
   const filteredTools = activeCategory === "All" 
