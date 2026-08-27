@@ -28,6 +28,7 @@ import RemoveBackgroundView from './components/RemoveBackgroundView';
 import JsonFormatterView from './components/JsonFormatterView';
 import WordToPdfView from './components/WordToPdfView';
 import CloudGeneratorView from './components/CloudGeneratorView';
+import AiEmailBuilderView from './components/AiEmailBuilderView';
 
 
 const globalStyles = `
@@ -178,6 +179,7 @@ function MainApp() {
           <Route path="/json-formatter" element={<JsonFormatterView showToast={triggerToast} />} />
           <Route path="/word-to-pdf" element={<WordToPdfView showToast={triggerToast} />} />
           <Route path="/cloud-generator" element={<CloudGeneratorView showToast={triggerToast} />} />
+          <Route path="/ai-email-builder" element={<AiEmailBuilderView showToast={triggerToast} />} />
           
         </Routes>
       </main>
