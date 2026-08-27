@@ -131,12 +131,12 @@ function MainApp() {
       {/* Frosted Glass Header */}
       <header className="flex items-center justify-between px-4 sm:px-8 py-4 sm:py-5 border-b border-white/[0.05] bg-[#030303]/40 backdrop-blur-2xl sticky top-0 z-40 transition-all">
         <div className="flex items-center gap-2 sm:gap-3 cursor-pointer group" onClick={() => navigate('/')}>
-          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-white/[0.03] flex items-center justify-center border border-white/[0.08] group-hover:bg-white/[0.08] group-hover:scale-105 transition-all duration-500 ease-out">
-            <QrCode className="w-4 h-4 sm:w-5 sm:h-5 text-white group-hover:rotate-6 transition-transform duration-500" />
-          </div>
-          <span className="text-lg sm:text-xl font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white to-white/60">
-            eTOOLS
-          </span>
+          <img 
+    src="/etools-logo.png" 
+    alt="eTools Hub Logo" 
+    className="w-24 h-24 sm:w-32 sm:h-32 md:w-20 md:h-10 object-contain rounded-2xl group-hover:scale-105 transition-all duration-500 ease-out" 
+  />
+         
         </div>
         
         {user ? (
