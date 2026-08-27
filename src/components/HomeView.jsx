@@ -4,7 +4,7 @@ import {
   BarChart2, BarChart3, Sparkles, Download, Globe, 
   ScanText, ImagePlus, Code, Layers, Image, Palette, FileImage, 
   SpellCheck, FileArchive, RefreshCw, ShieldCheck, UserCheck, FileCode2, PlaySquare,
-  FileJson, Cloud, Mail, Camera, Music
+  FileJson, Cloud, Mail, Camera, Music, Link as LinkIcon
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -118,6 +118,7 @@ export default function HomeView({ showToast }) {
     { title: "Website Screenshot", desc: "Capture high-resolution full-page or viewport screenshots in desktop, tablet, or mobile frames.", cat: "Utilities", active: true, path: '/website-screenshot', icon: Camera },
     { title: "Video to Audio Converter", desc: "Convert MP4 and other videos to MP3 or WAV audio — 100% in your browser.", cat: "Media", active: true, path: '/video-to-audio', icon: Music },
     { title: "Email Signature Generator", desc: "Craft a premium, inline-CSS email signature that renders perfectly in Gmail, Outlook and Apple Mail.", cat: "Utilities", active: true, path: '/email-signature', icon: Mail },
+    { title: "URL Shortener Studio", desc: "Shorten long URLs instantly using free third-party engines. Save multiple link projects with custom file names, edit, delete, and test redirects.", cat: "Utilities", active: true, path: '/url-shortener', icon: LinkIcon },
   ];
 
   const filteredTools = activeCategory === "All" 
