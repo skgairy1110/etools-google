@@ -89,7 +89,7 @@ const getToolColorStyle = (title) => {
 export default function HomeView({ showToast }) {
   const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState("All");
-  const categories = ["All", "Generators", "PDF", "Text Tools", "Media", "Developer"];
+  const categories = ["All", "Generators", "PDF", "Text Tools", "Media", "Developer", "Utilities", "Marketing"];
 
   const dummyTools = [
     { title: "QR Code Generator", desc: "Generate tracking-ready QR matrices instantly. Customize colors, logos, and error resilience.", cat: "Generators", active: true, path: '/qr', icon: QrCode },
@@ -112,12 +112,12 @@ export default function HomeView({ showToast }) {
     { title: "PDF Compressor", desc: "Reduce the file size of your PDF documents with customizable compression levels.", cat: "PDF", active: true, path: '/pdf-compressor', icon: Minimize2 },
     { title: "Video to GIF Converter", desc: "Convert video files into animated GIFs. Customize resolution and frame rates for optimal file size.", cat: "Media", active: true, path: '/video-to-gif', icon: PlaySquare },
     { title: "Background Remover", desc: "Instantly remove image backgrounds using advanced AI. Runs entirely locally in your browser for absolute privacy.", cat: "Media", active: true, path: '/remove-background', icon: Layers },
-    { title: "JSON Formatter", desc: "Instantly beautify, minify, and validate complex JSON data. Find syntax errors easily with strict formatting rules.", cat: "Developer", active: true, path: '/json-formatter', icon: FileJson },
     { title: "Word to PDF", desc: "Batch convert DOCX, DOC, TXT, and RTF files to PDF instantly. 100% client-side to ensure privacy.", cat: "PDF", active: true, path: '/word-to-pdf', icon: FileText },
     { title: "Cloud Generator Studio", desc: "Create interactive word clouds, logo grids, and icon clusters. Customize layouts, shapes, and export instantly.", cat: "Design", active: true, path: '/cloud-generator', icon: Cloud },
     { title: "AI Email Builder", desc: "Turn a plain-language prompt into production-ready responsive HTML email templates instantly.", cat: "Marketing", active: true, path: '/ai-email-builder', icon: Mail },
     { title: "Website Screenshot", desc: "Capture high-resolution full-page or viewport screenshots in desktop, tablet, or mobile frames.", cat: "Utilities", active: true, path: '/website-screenshot', icon: Camera },
     { title: "Video to Audio Converter", desc: "Convert MP4 and other videos to MP3 or WAV audio — 100% in your browser.", cat: "Media", active: true, path: '/video-to-audio', icon: Music },
+    { title: "Email Signature Generator", desc: "Craft a premium, inline-CSS email signature that renders perfectly in Gmail, Outlook and Apple Mail.", cat: "Utilities", active: true, path: '/email-signature', icon: Mail },
   ];
 
   const filteredTools = activeCategory === "All" 

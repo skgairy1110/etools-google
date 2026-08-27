@@ -31,6 +31,7 @@ import CloudGeneratorView from './components/CloudGeneratorView';
 import AiEmailBuilderView from './components/AiEmailBuilderView';
 import WebsiteScreenshotView from './components/WebsiteScreenshotView';
 import VideoToAudioConverterView from './components/VideoToAudioConverterView';
+import EmailSignatureView from './components/EmailSignatureView';
 
 
 const globalStyles = `
@@ -184,6 +185,7 @@ function MainApp() {
           <Route path="/ai-email-builder" element={<AiEmailBuilderView showToast={triggerToast} />} />
           <Route path="/website-screenshot" element={<WebsiteScreenshotView showToast={triggerToast} />} />
           <Route path="/video-to-audio" element={<VideoToAudioConverterView showToast={triggerToast} />} />
+          <Route path="/email-signature" element={<EmailSignatureView showToast={triggerToast} />} />
           
         </Routes>
       </main>
