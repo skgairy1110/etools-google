@@ -4,52 +4,87 @@ import {
   BarChart2, BarChart3, Sparkles, Download, Globe, 
   ScanText, ImagePlus, Code, Layers, Image, Palette, FileImage, 
   SpellCheck, FileArchive, RefreshCw, ShieldCheck, UserCheck, FileCode2, PlaySquare,
-  FileJson, Cloud, Mail, Camera
+  FileJson, Cloud, Mail, Camera, Music
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-const toolThemes = [
+// Curated dark-mode friendly muted color palette (subtle, rich tones)
+const darkThemeColors = [
   {
-    bgHover: "hover:bg-cyan-500/[0.03]",
-    iconBg: "bg-gradient-to-br from-blue-500 to-cyan-400",
-    iconGlow: "shadow-[0_0_20px_rgba(34,211,238,0.4)]",
-    lineGradient: "from-transparent via-cyan-400 to-transparent",
-    borderHover: "hover:border-cyan-500/30",
-    cardGlow: "hover:shadow-[0_20px_40px_-15px_rgba(34,211,238,0.15)]"
+    bgHover: "hover:bg-indigo-500/[0.03]",
+    iconBg: "bg-gradient-to-br from-indigo-600/80 to-purple-600/80",
+    iconGlow: "shadow-[0_0_20px_rgba(99,102,241,0.3)]",
+    lineGradient: "from-transparent via-indigo-400 to-transparent",
+    borderHover: "hover:border-indigo-500/30",
+    cardGlow: "hover:shadow-[0_20px_40px_-15px_rgba(99,102,241,0.15)]"
+  },
+  {
+    bgHover: "hover:bg-purple-500/[0.03]",
+    iconBg: "bg-gradient-to-br from-purple-600/80 to-pink-600/80",
+    iconGlow: "shadow-[0_0_20px_rgba(168,85,247,0.3)]",
+    lineGradient: "from-transparent via-purple-400 to-transparent",
+    borderHover: "hover:border-purple-500/30",
+    cardGlow: "hover:shadow-[0_20px_40px_-15px_rgba(168,85,247,0.15)]"
+  },
+  {
+    bgHover: "hover:bg-blue-500/[0.03]",
+    iconBg: "bg-gradient-to-br from-blue-600/80 to-cyan-600/80",
+    iconGlow: "shadow-[0_0_20px_rgba(59,130,246,0.3)]",
+    lineGradient: "from-transparent via-blue-400 to-transparent",
+    borderHover: "hover:border-blue-500/30",
+    cardGlow: "hover:shadow-[0_20px_40px_-15px_rgba(59,130,246,0.15)]"
+  },
+  {
+    bgHover: "hover:bg-emerald-500/[0.03]",
+    iconBg: "bg-gradient-to-br from-emerald-600/80 to-teal-600/80",
+    iconGlow: "shadow-[0_0_20px_rgba(16,185,129,0.3)]",
+    lineGradient: "from-transparent via-emerald-400 to-transparent",
+    borderHover: "hover:border-emerald-500/30",
+    cardGlow: "hover:shadow-[0_20px_40px_-15px_rgba(16,185,129,0.15)]"
+  },
+  {
+    bgHover: "hover:bg-amber-500/[0.03]",
+    iconBg: "bg-gradient-to-br from-amber-600/80 to-orange-600/80",
+    iconGlow: "shadow-[0_0_20px_rgba(245,158,11,0.3)]",
+    lineGradient: "from-transparent via-amber-400 to-transparent",
+    borderHover: "hover:border-amber-500/30",
+    cardGlow: "hover:shadow-[0_20px_40px_-15px_rgba(245,158,11,0.15)]"
   },
   {
     bgHover: "hover:bg-rose-500/[0.03]",
-    iconBg: "bg-gradient-to-br from-fuchsia-600 to-rose-500",
-    iconGlow: "shadow-[0_0_20px_rgba(244,63,94,0.4)]",
-    lineGradient: "from-transparent via-rose-500 to-transparent",
+    iconBg: "bg-gradient-to-br from-rose-600/80 to-red-600/80",
+    iconGlow: "shadow-[0_0_20px_rgba(244,63,94,0.3)]",
+    lineGradient: "from-transparent via-rose-400 to-transparent",
     borderHover: "hover:border-rose-500/30",
     cardGlow: "hover:shadow-[0_20px_40px_-15px_rgba(244,63,94,0.15)]"
   },
   {
-    bgHover: "hover:bg-emerald-500/[0.03]",
-    iconBg: "bg-gradient-to-br from-emerald-400 to-teal-500",
-    iconGlow: "shadow-[0_0_20px_rgba(52,211,153,0.4)]",
-    lineGradient: "from-transparent via-emerald-400 to-transparent",
-    borderHover: "hover:border-emerald-500/30",
-    cardGlow: "hover:shadow-[0_20px_40px_-15px_rgba(52,211,153,0.15)]"
+    bgHover: "hover:bg-cyan-500/[0.03]",
+    iconBg: "bg-gradient-to-br from-cyan-600/80 to-sky-600/80",
+    iconGlow: "shadow-[0_0_20px_rgba(6,182,212,0.3)]",
+    lineGradient: "from-transparent via-cyan-400 to-transparent",
+    borderHover: "hover:border-cyan-500/30",
+    cardGlow: "hover:shadow-[0_20px_40px_-15px_rgba(6,182,212,0.15)]"
   },
   {
     bgHover: "hover:bg-violet-500/[0.03]",
-    iconBg: "bg-gradient-to-br from-violet-600 to-purple-500",
-    iconGlow: "shadow-[0_0_20px_rgba(139,92,246,0.4)]",
-    lineGradient: "from-transparent via-purple-500 to-transparent",
-    borderHover: "hover:border-purple-500/30",
+    iconBg: "bg-gradient-to-br from-violet-600/80 to-indigo-600/80",
+    iconGlow: "shadow-[0_0_20px_rgba(139,92,246,0.3)]",
+    lineGradient: "from-transparent via-violet-400 to-transparent",
+    borderHover: "hover:border-violet-500/30",
     cardGlow: "hover:shadow-[0_20px_40px_-15px_rgba(139,92,246,0.15)]"
-  },
-  {
-    bgHover: "hover:bg-orange-500/[0.03]",
-    iconBg: "bg-gradient-to-br from-amber-500 to-orange-500",
-    iconGlow: "shadow-[0_0_20px_rgba(249,115,22,0.4)]",
-    lineGradient: "from-transparent via-orange-500 to-transparent",
-    borderHover: "hover:border-orange-500/30",
-    cardGlow: "hover:shadow-[0_20px_40px_-15px_rgba(249,115,22,0.15)]"
   }
 ];
+
+// Helper to pick a consistent theme based on tool title string index (ensures randomness without pattern loops)
+const getToolColorStyle = (title) => {
+  let hash = 0;
+  for (let i = 0; i < title.length; i++) {
+    hash = title.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const index = Math.abs(hash) % darkThemeColors.length;
+  return darkThemeColors[index];
+};
 
 export default function HomeView({ showToast }) {
   const navigate = useNavigate();
@@ -66,24 +101,23 @@ export default function HomeView({ showToast }) {
     { title: "Image to Text (OCR)", desc: "Extract text from images using advanced optical character recognition technology.", cat: "Media", active: true, path: '/image-to-text', icon: ScanText },
     { title: "AI Image Upscaler", desc: "Enhance and upscale your images up to 16x without losing quality using advanced processing.", cat: "Media", active: true, path: '/image-upscaler', icon: ImagePlus },
     { title: "JSON Formatter", desc: "Beautify, validate, and parse complex JSON data architectures in real-time.", cat: "Developer", active: true, path: '/json-formatter', icon: Code },
-   // { title: "CSS Shadow Builder", desc: "Craft perfect, buttery-smooth CSS box shadows with an intuitive visual editor.", cat: "Developer", active: false, path: '/css-shadow', icon: Layers },
-   // { title: "Gradient Generator", desc: "Mix and export beautiful linear and radial CSS gradients for your next project.", cat: "Generators", active: false, path: '/gradient-gen', icon: Sparkles },
-    { title: "AI Color Genie", desc: "Generate perfect, UI-ready color palettes using AI based on cinematic themes or moods.", cat: "Generators", active: true, path: '/ai-colors', icon: Palette }, // <-- NEW TOOL
-    { title: "Image to PDF", desc: "Convert multiple images into a single, high-quality A4 PDF document instantly.", cat: "PDF", active: true, path: '/image-to-pdf', icon: FileImage }, // <-- NEW TOOL
-    { title: "AI Grammar Checker", desc: "Check your text for grammar, spelling, and punctuation errors with advanced AI analysis.", cat: "Text Tools", active: true, path: '/grammar-checker', icon: SpellCheck }, // <-- NEW TOOL
-    { title: "GIF Compressor Pro", desc: "Advanced bulk compression for GIF media. Reduce file size while retaining quality and aspect ratios.", cat: "Media", active: true, path: '/gif-compressor', icon: FileArchive }, // <-- NEW TOOL
-    { title: "Image Format Converter", desc: "Batch convert images between PNG, JPG, and WebP. Full control over quality and transparency.", cat: "Media", active: true, path: '/image-converter', icon: RefreshCw }, // <-- NEW TOOL
-    { title: "PDF to Word", desc: "Convert PDF documents into editable Word (.docx) files. (Requires backend integration for layout parsing).", cat: "PDF", active: true, path: '/pdf-to-word', icon: FileText }, // <-- NEW TOOL
-    { title: "Plagiarism Checker", desc: "100% Accurate, free & Trustworthy. Check your content for plagiarism against billions of web pages.", cat: "Text Tools", active: true, path: '/plagiarism-checker', icon: ShieldCheck }, // <-- NEW TOOL
-    { title: "HTML to PDF/JPG", desc: "Convert HTML content or webpages directly to high-quality PDF or JPG images without server uploads.", cat: "PDF", active: true, path: '/html-to-pdf', icon: FileCode2 }, // <-- NEW TOOL
-    { title: "PDF Compressor", desc: "Reduce the file size of your PDF documents with customizable compression levels.", cat: "PDF", active: true, path: '/pdf-compressor', icon: Minimize2 }, // <-- NEW TOOL
-    { title: "Video to GIF Converter", desc: "Convert video files into animated GIFs. Customize resolution and frame rates for optimal file size.", cat: "Media", active: true, path: '/video-to-gif', icon: PlaySquare }, // <-- NEW TOOL
-    { title: "Background Remover", desc: "Instantly remove image backgrounds using advanced AI. Runs entirely locally in your browser for absolute privacy.", cat: "Media", active: true, path: '/remove-background', icon: Layers }, // <-- NEW TOOL
-    { title: "JSON Formatter", desc: "Instantly beautify, minify, and validate complex JSON data. Find syntax errors easily with strict formatting rules.", cat: "Developer", active: true, path: '/json-formatter', icon: FileJson }, // <-- NEW TOOL
-    { title: "Word to PDF", desc: "Batch convert DOCX, DOC, TXT, and RTF files to PDF instantly. 100% client-side to ensure privacy.", cat: "PDF", active: true, path: '/word-to-pdf', icon: FileText }, // <-- NEW TOOL
-    { title: "Cloud Generator Studio", desc: "Create interactive word clouds, logo grids, and icon clusters. Customize layouts, shapes, and export instantly.", cat: "Design", active: true, path: '/cloud-generator', icon: Cloud }, // <-- NEW TOOL
+    { title: "AI Color Genie", desc: "Generate perfect, UI-ready color palettes using AI based on cinematic themes or moods.", cat: "Generators", active: true, path: '/ai-colors', icon: Palette },
+    { title: "Image to PDF", desc: "Convert multiple images into a single, high-quality A4 PDF document instantly.", cat: "PDF", active: true, path: '/image-to-pdf', icon: FileImage },
+    { title: "AI Grammar Checker", desc: "Check your text for grammar, spelling, and punctuation errors with advanced AI analysis.", cat: "Text Tools", active: true, path: '/grammar-checker', icon: SpellCheck },
+    { title: "GIF Compressor Pro", desc: "Advanced bulk compression for GIF media. Reduce file size while retaining quality and aspect ratios.", cat: "Media", active: true, path: '/gif-compressor', icon: FileArchive },
+    { title: "Image Format Converter", desc: "Batch convert images between PNG, JPG, and WebP. Full control over quality and transparency.", cat: "Media", active: true, path: '/image-converter', icon: RefreshCw },
+    { title: "PDF to Word", desc: "Convert PDF documents into editable Word (.docx) files. (Requires backend integration for layout parsing).", cat: "PDF", active: true, path: '/pdf-to-word', icon: FileText },
+    { title: "Plagiarism Checker", desc: "100% Accurate, free & Trustworthy. Check your content for plagiarism against billions of web pages.", cat: "Text Tools", active: true, path: '/plagiarism-checker', icon: ShieldCheck },
+    { title: "HTML to PDF/JPG", desc: "Convert HTML content or webpages directly to high-quality PDF or JPG images without server uploads.", cat: "PDF", active: true, path: '/html-to-pdf', icon: FileCode2 },
+    { title: "PDF Compressor", desc: "Reduce the file size of your PDF documents with customizable compression levels.", cat: "PDF", active: true, path: '/pdf-compressor', icon: Minimize2 },
+    { title: "Video to GIF Converter", desc: "Convert video files into animated GIFs. Customize resolution and frame rates for optimal file size.", cat: "Media", active: true, path: '/video-to-gif', icon: PlaySquare },
+    { title: "Background Remover", desc: "Instantly remove image backgrounds using advanced AI. Runs entirely locally in your browser for absolute privacy.", cat: "Media", active: true, path: '/remove-background', icon: Layers },
+    { title: "JSON Formatter", desc: "Instantly beautify, minify, and validate complex JSON data. Find syntax errors easily with strict formatting rules.", cat: "Developer", active: true, path: '/json-formatter', icon: FileJson },
+    { title: "Word to PDF", desc: "Batch convert DOCX, DOC, TXT, and RTF files to PDF instantly. 100% client-side to ensure privacy.", cat: "PDF", active: true, path: '/word-to-pdf', icon: FileText },
+    { title: "Cloud Generator Studio", desc: "Create interactive word clouds, logo grids, and icon clusters. Customize layouts, shapes, and export instantly.", cat: "Design", active: true, path: '/cloud-generator', icon: Cloud },
     { title: "AI Email Builder", desc: "Turn a plain-language prompt into production-ready responsive HTML email templates instantly.", cat: "Marketing", active: true, path: '/ai-email-builder', icon: Mail },
     { title: "Website Screenshot", desc: "Capture high-resolution full-page or viewport screenshots in desktop, tablet, or mobile frames.", cat: "Utilities", active: true, path: '/website-screenshot', icon: Camera },
+    { title: "Video to Audio Converter", desc: "Convert MP4 and other videos to MP3 or WAV audio — 100% in your browser.", cat: "Media", active: true, path: '/video-to-audio', icon: Music },
   ];
 
   const filteredTools = activeCategory === "All" 
@@ -133,7 +167,7 @@ export default function HomeView({ showToast }) {
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-5 animate-fade-in-up delay-200">
         {filteredTools.map((tool, idx) => {
           const IconComponent = tool.icon;
-          const theme = toolThemes[idx % toolThemes.length];
+          const theme = getToolColorStyle(tool.title);
 
           return (
             <div 
@@ -148,8 +182,8 @@ export default function HomeView({ showToast }) {
               )}
               
               <div className="flex justify-between items-start mb-3 sm:mb-4">
-                <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:-rotate-6 ${tool.active ? `${theme.iconBg} ${theme.iconGlow}` : 'bg-white/10'}`}>
-                  {IconComponent && <IconComponent className={`w-4 h-4 sm:w-5 sm:h-5 ${tool.active ? 'text-white' : 'text-gray-500'}`} />}
+                <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:-rotate-6 ${tool.active ? `${theme.iconBg} ${theme.iconGlow}` : 'bg-white/15'}`}>
+                  {IconComponent && <IconComponent className={`w-4 h-4 sm:w-5 sm:h-5 ${tool.active ? 'text-white' : 'text-gray-400'}`} />}
                 </div>
 
                 {!tool.active && (
@@ -161,7 +195,7 @@ export default function HomeView({ showToast }) {
               
               <div className="mt-auto">
                 <div className="flex items-center gap-2 sm:gap-3 mb-1 sm:mb-2">
-                  <h3 className="text-white font-bold sm:font-extrabold text-sm sm:text-base tracking-tight group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-500 transition-all leading-tight">
+                  <h3 className="text-white font-bold sm:font-extrabold text-sm sm:text-base tracking-tight group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-400 transition-all leading-tight">
                     {tool.title}
                   </h3>
                 </div>
