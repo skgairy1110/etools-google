@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { QrCode, Star, Mail, Phone, MessageCircle, Upload, Download, ArrowLeft, Save, Activity, Edit2, Trash2, BarChart2 } from 'lucide-react';
+import { QrCode, Star, Mail, Phone, MessageCircle, Upload, Download, ArrowLeft, Save, BarChart2, Trash2, FolderPlus } from 'lucide-react';
 import { doc, deleteDoc, onSnapshot, collection, addDoc, query, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase'; 
 
@@ -34,13 +34,14 @@ export default function QRToolView({ user, showToast }) {
   const [isGenerating, setIsGenerating] = useState(false);
   
   const fileInputRef = useRef(null);
-  const [isDragging, setIsDragging] = useState(false);
   const [customLogoUrl, setCustomLogoUrl] = useState(null);
 
   const [projectName, setProjectName] = useState('');
   const [savedProjects, setSavedProjects] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [activeProjectId, setActiveProjectId] = useState(null);
+  const [realScanCount, setRealScanCount] = useState(0);
 
   useEffect(() => {
     if (!user || !db) return;
@@ -54,15 +55,32 @@ export default function QRToolView({ user, showToast }) {
     return () => unsubscribe();
   }, [user]);
 
-  useEffect(() => { handleGenerate(); }, []);
+  useEffect(() => {
+    if (!user || !db || !activeProjectId) return;
+    const docRef = doc(db, 'artifacts', 'etools-app', 'users', user.uid, 'qr_projects', activeProjectId);
+    const unsubscribeDoc = onSnapshot(docRef, (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        setRealScanCount(data.scans || 0);
+      }
+    });
+    return () => unsubscribeDoc();
+  }, [user, activeProjectId]);
+
+  useEffect(() => { handleGenerate(); }, [text, size, errorCorrection, darkColor, lightColor, margin, centerIcon, customLogoUrl]);
 
   const handleGenerate = () => {
     if (!text.trim()) return;
     setIsGenerating(true);
+    
+    const targetData = activeProjectId 
+      ? `${window.location.origin}/api/qr-redirect?id=${activeProjectId}` 
+      : text;
+
     const cleanDark = darkColor.replace('#', '');
     const cleanLight = lightColor.replace('#', '');
     const sizeNum = size.split('x')[0];
-    const apiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${sizeNum}x${sizeNum}&data=${encodeURIComponent(text)}&color=${cleanDark}&bgcolor=${cleanLight}&margin=${margin}&ecc=${errorCorrection}`;
+    const apiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${sizeNum}x${sizeNum}&data=${encodeURIComponent(targetData)}&color=${cleanDark}&bgcolor=${cleanLight}&margin=${margin}&ecc=${errorCorrection}`;
     
     setTimeout(() => {
       setGeneratedUrl(apiUrl);
@@ -133,7 +151,7 @@ export default function QRToolView({ user, showToast }) {
       document.body.removeChild(link);
       showToast("PNG downloaded with center logo!");
     } catch (err) {
-      console.error("PNG compositing error:", err);
+      console.error("PNG error:", err);
       const link = document.createElement('a');
       link.href = generatedUrl;
       link.download = `qrcode-${Date.now()}.png`;
@@ -150,8 +168,9 @@ export default function QRToolView({ user, showToast }) {
       const cleanDark = darkColor.replace('#', '');
       const cleanLight = lightColor.replace('#', '');
       const sizeNum = size.split('x')[0];
+      const targetData = activeProjectId ? `${window.location.origin}/api/qr-redirect?id=${activeProjectId}` : text;
       
-      const svgApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${sizeNum}x${sizeNum}&data=${encodeURIComponent(text)}&color=${cleanDark}&bgcolor=${cleanLight}&margin=${margin}&ecc=${errorCorrection}&format=svg`;
+      const svgApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${sizeNum}x${sizeNum}&data=${encodeURIComponent(targetData)}&color=${cleanDark}&bgcolor=${cleanLight}&margin=${margin}&ecc=${errorCorrection}&format=svg`;
       
       const response = await fetch(svgApiUrl);
       let svgText = await response.text();
@@ -194,7 +213,7 @@ export default function QRToolView({ user, showToast }) {
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(blobUrl);
-      showToast("SVG with center logo downloaded!");
+      showToast("SVG downloaded!");
     } catch (err) {
       console.error("SVG Download failed:", err);
       showToast("Failed to download SVG");
@@ -207,6 +226,7 @@ export default function QRToolView({ user, showToast }) {
     const payload = {
       userId: user.uid,
       projectName: projectName,
+      destinationUrl: text,
       config: { text, size, errorCorrection, darkColor, lightColor, margin, centerIcon, customLogoUrl },
       updatedAt: Date.now()
     };
@@ -217,17 +237,50 @@ export default function QRToolView({ user, showToast }) {
         showToast("Project updated successfully!");
       } else {
         payload.createdAt = Date.now();
-        payload.scans = Math.floor(Math.random() * 120) + 12;
-        await addDoc(collection(db, 'artifacts', 'etools-app', 'users', user.uid, 'qr_projects'), payload);
-        showToast("Project saved to your dashboard!");
+        payload.scans = 0; 
+        const docRef = await addDoc(collection(db, 'artifacts', 'etools-app', 'users', user.uid, 'qr_projects'), payload);
+        setActiveProjectId(docRef.id);
+        showToast("Project saved with real-time scan tracking!");
       }
       setProjectName('');
       setEditingId(null);
+      handleGenerate();
     } catch (error) {
       console.error("Error saving project:", error);
       showToast("Failed to save project.");
     }
     setIsSaving(false);
+  };
+
+  const handleLoadProject = (proj) => {
+    setActiveProjectId(proj.id);
+    setProjectName(proj.projectName);
+    setText(proj.destinationUrl || proj.config?.text || '');
+    setSize(proj.config?.size || '512x512');
+    setErrorCorrection(proj.config?.errorCorrection || 'H');
+    setDarkColor(proj.config?.darkColor || '#000000');
+    setLightColor(proj.config?.lightColor || '#FFFFFF');
+    setMargin(proj.config?.margin || '4');
+    setCenterIcon(proj.config?.centerIcon || 'None');
+    setCustomLogoUrl(proj.config?.customLogoUrl || null);
+    setRealScanCount(proj.scans || 0);
+    setEditingId(proj.id);
+    showToast(`Loaded project "${proj.projectName}"`);
+  };
+
+  const handleDeleteProject = async (e, id) => {
+    e.stopPropagation();
+    if (!user || !db) return;
+    try {
+      await deleteDoc(doc(db, 'artifacts', 'etools-app', 'users', user.uid, 'qr_projects', id));
+      if (activeProjectId === id) {
+        setActiveProjectId(null);
+        setProjectName('');
+      }
+      showToast("Project deleted.");
+    } catch (err) {
+      console.error("Failed to delete project:", err);
+    }
   };
 
   const icons = [
@@ -257,13 +310,14 @@ export default function QRToolView({ user, showToast }) {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch">
+        {/* Left Column Controls & Saved Projects */}
         <div className="bg-white/[0.02] backdrop-blur-xl rounded-2xl p-5 border border-white/[0.05] shadow-2xl flex flex-col gap-4">
           <div>
-            <label className="block text-[10px] font-semibold tracking-wide text-gray-300 uppercase mb-2">Data Target</label>
+            <label className="block text-[10px] font-semibold tracking-wide text-gray-300 uppercase mb-2">Data Target / Destination URL</label>
             <textarea 
               value={text}
               onChange={(e) => setText(e.target.value)}
-              placeholder="https://your-website.com"
+              placeholder="Enter Your Text"
               className="w-full h-16 bg-black/20 border border-white/[0.05] rounded-xl p-3 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500/50 focus:bg-black/40 resize-none transition-all shadow-inner"
             />
           </div>
@@ -355,11 +409,65 @@ export default function QRToolView({ user, showToast }) {
               {isGenerating ? 'Rendering...' : 'Compile QR Matrix'}
             </button>
           </div>
+
+          {/* Logged-In Saved Files Storage UI */}
+          <div className="bg-black/40 border border-white/[0.08] p-4 rounded-2xl flex flex-col gap-3 mt-2">
+            <div className="flex items-center justify-between">
+              <label className="text-[10px] uppercase tracking-widest text-cyan-400 font-bold flex items-center gap-1.5">
+                <FolderPlus className="w-3.5 h-3.5" /> Saved QR Files ({savedProjects.length})
+              </label>
+              {activeProjectId && (
+                <button onClick={() => { setActiveProjectId(null); setProjectName(''); setEditingId(null); setText('https://supertools.uk'); }} className="text-[10px] text-gray-400 hover:text-white underline">
+                  Clear Selection
+                </button>
+              )}
+            </div>
+
+            {user ? (
+              <>
+                <div className="flex gap-2">
+                   <input type="text" value={projectName} onChange={(e) => setProjectName(e.target.value)} placeholder="Project File Name..." className="flex-1 bg-black/30 border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500" />
+                   <button onClick={handleSaveProject} disabled={isSaving || !projectName.trim()} className="bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/50 text-cyan-300 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors flex items-center gap-1.5 shrink-0">
+                     <Save className="w-3.5 h-3.5" /> {editingId ? 'Update' : 'Save'}
+                   </button>
+                </div>
+
+                <div className="mt-1 pt-2 border-t border-white/[0.05] max-h-40 overflow-y-auto custom-scrollbar space-y-2">
+                  {savedProjects.length === 0 ? (
+                    <p className="text-[11px] text-gray-500 text-center py-2">No saved QR projects found in workspace storage.</p>
+                  ) : (
+                    savedProjects.map(proj => (
+                      <div 
+                        key={proj.id} 
+                        onClick={() => handleLoadProject(proj)} 
+                        className={`group flex items-center justify-between text-xs p-2.5 rounded-xl cursor-pointer transition ${activeProjectId === proj.id ? 'bg-cyan-500/15 text-cyan-200 border border-cyan-500/40 shadow' : 'bg-black/30 text-gray-300 hover:bg-white/[0.04] border border-white/[0.04]'}`}
+                      >
+                        <div className="min-w-0 flex-1 pr-2">
+                          <div className="font-bold truncate text-white">{proj.projectName}</div>
+                          <div className="text-[10px] text-gray-400 font-mono flex items-center gap-2 mt-0.5">
+                            <span>{proj.scans || 0} scans</span>
+                            <span className="text-gray-600">•</span>
+                            <span className="truncate max-w-[150px]">{proj.destinationUrl || proj.config?.text}</span>
+                          </div>
+                        </div>
+                        <button onClick={(e) => handleDeleteProject(e, proj.id)} className="text-gray-500 hover:text-rose-400 p-1.5 transition" title="Delete project">
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </>
+            ) : (
+              <p className="text-[11px] text-gray-400 text-center py-2">Sign in with Google at the top to view and save your QR projects.</p>
+            )}
+          </div>
         </div>
 
-        <div className="bg-white/[0.01] rounded-2xl p-6 border border-white/[0.05] flex flex-col items-center justify-center relative overflow-hidden w-full h-full min-h-[350px]">
+        {/* Right Column Preview & Analytics */}
+        <div className="bg-white/[0.01] rounded-2xl p-6 border border-white/[0.05] flex flex-col items-center justify-between relative overflow-hidden w-full h-full min-h-[350px]">
           {!generatedUrl ? (
-             <div className="flex flex-col items-center space-y-3 relative z-10">
+             <div className="flex flex-col items-center justify-center my-auto space-y-3 relative z-10">
                <div className="w-16 h-16 bg-white/[0.02] border border-white/[0.05] rounded-2xl flex items-center justify-center text-gray-600 animate-pulse">
                  <QrCode className="w-8 h-8" />
                </div>
@@ -367,8 +475,27 @@ export default function QRToolView({ user, showToast }) {
              </div>
           ) : (
             <div className="flex flex-col items-center justify-between w-full h-full relative z-10">
+              {activeProjectId ? (
+                <div className="w-full max-w-sm mb-3 bg-white/[0.03] border border-white/[0.08] px-4 py-2.5 rounded-xl flex items-center justify-between shadow-lg">
+                  <div className="flex items-center gap-2">
+                    <div className="p-1.5 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+                      <BarChart2 className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <span className="block text-[9px] text-gray-400 uppercase tracking-wider font-semibold">Real Scan Count</span>
+                      <span className="text-xs font-mono font-bold text-white tracking-tight">{realScanCount} actual scans</span>
+                    </div>
+                  </div>
+                  <span className="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 font-mono">Live Tracking</span>
+                </div>
+              ) : (
+                <div className="w-full max-w-sm mb-3 bg-amber-500/5 border border-amber-500/20 px-4 py-2 rounded-xl text-center">
+                  <span className="text-[10px] text-amber-300 font-medium">Save project below to activate real scan analytics tracking.</span>
+                </div>
+              )}
+
               <div className="relative inline-block bg-white p-3.5 rounded-2xl shadow-[0_0_40px_rgba(0,0,0,0.5)] border border-white/10 group mb-4">
-                <img src={generatedUrl} alt="Generated QR" className="max-w-full h-auto rounded-lg max-h-[200px] object-contain transition-transform duration-500 group-hover:scale-[1.02]" />
+                <img src={generatedUrl} alt="Generated QR" className="max-w-full h-auto rounded-lg max-h-[180px] object-contain transition-transform duration-500 group-hover:scale-[1.02]" />
                 
                 {centerIcon !== 'None' && centerIcon !== 'Custom' && (
                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -396,20 +523,6 @@ export default function QRToolView({ user, showToast }) {
                      <Download className="w-3.5 h-3.5 text-cyan-400" /> SVG
                    </button>
                  </div>
-
-                 {user ? (
-                    <div className="bg-white/[0.02] border border-white/[0.05] p-3 rounded-xl flex flex-col gap-2">
-                      <label className="text-[9px] uppercase tracking-widest text-gray-500 font-semibold">Workspace Storage</label>
-                      <div className="flex gap-2">
-                         <input type="text" value={projectName} onChange={(e) => setProjectName(e.target.value)} placeholder="Artifact Title..." className="flex-1 bg-black/20 border border-white/[0.05] rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-500/50" />
-                         <button onClick={handleSaveProject} disabled={isSaving || !projectName.trim()} className="bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/50 text-cyan-300 px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5">
-                           <Save className="w-3.5 h-3.5" /> {editingId ? 'Update' : 'Save'}
-                         </button>
-                      </div>
-                    </div>
-                 ) : (
-                    <p className="text-[10px] text-center text-gray-600 uppercase tracking-wider">Sign in to save artifacts</p>
-                 )}
               </div>
             </div>
           )}
