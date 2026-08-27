@@ -33,6 +33,7 @@ import WebsiteScreenshotView from './components/WebsiteScreenshotView';
 import VideoToAudioConverterView from './components/VideoToAudioConverterView';
 import EmailSignatureView from './components/EmailSignatureView';
 import UrlShortenerView from './components/UrlShortenerView';
+import ImagePromptGeneratorView from './components/ImagePromptGeneratorView';
 
 
 const globalStyles = `
@@ -188,6 +189,7 @@ function MainApp() {
           <Route path="/video-to-audio" element={<VideoToAudioConverterView showToast={triggerToast} />} />
           <Route path="/email-signature" element={<EmailSignatureView showToast={triggerToast} />} />
           <Route path="/url-shortener" element={<UrlShortenerView showToast={triggerToast} />} />
+          <Route path="/image-prompt-generator" element={<ImagePromptGeneratorView showToast={triggerToast} />} />
           
         </Routes>
       </main>
