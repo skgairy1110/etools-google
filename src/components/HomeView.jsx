@@ -76,7 +76,7 @@ const darkThemeColors = [
   }
 ];
 
-// Helper to pick a consistent theme based on tool title string index (ensures randomness without pattern loops)
+// Helper to pick a consistent theme based on tool title string index
 const getToolColorStyle = (title) => {
   let hash = 0;
   for (let i = 0; i < title.length; i++) {
@@ -89,7 +89,7 @@ const getToolColorStyle = (title) => {
 export default function HomeView({ showToast }) {
   const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState("All");
-  const categories = ["All", "Generators", "PDF", "Text Tools", "Media", "Developer", "Utilities", "Marketing"];
+  const categories = ["All", "Generators", "PDF", "Text Tools", "Media", "Developer", "Utilities", "Marketing", "Design"];
 
   const dummyTools = [
     { title: "QR Code Generator", desc: "Generate tracking-ready QR matrices instantly. Customize colors, logos, and error resilience.", cat: "Generators", active: true, path: '/qr', icon: QrCode },
@@ -124,13 +124,13 @@ export default function HomeView({ showToast }) {
 
   const filteredTools = activeCategory === "All" 
     ? dummyTools 
-    : dummyTools.filter(t => t.cat.toLowerCase().includes(activeCategory.toLowerCase()));
+    : dummyTools.filter(t => t.cat.toLowerCase() === activeCategory.toLowerCase());
 
   return (
     <div className="w-full px-4 sm:px-8 lg:px-12 pt-6 sm:pt-8 pb-12 max-w-[1600px] mx-auto">
       
       {/* Hero Section */}
-      <div className="flex flex-col items-center text-center mb-8 sm:mb-12 animate-fade-in-up">
+      <div className="flex flex-col items-center text-center mb-8 sm:mb-10 animate-fade-in-up">
         <div className="inline-flex items-center gap-2 sm:gap-3 bg-[#050505]/80 border border-white/[0.08] backdrop-blur-2xl px-3 sm:px-4 py-1.5 rounded-full text-[9px] sm:text-[10px] md:text-xs font-bold tracking-widest uppercase mb-4 sm:mb-5 shadow-2xl hover:scale-105 transition-transform cursor-default">
           <div className="relative flex h-1.5 w-1.5 sm:h-2 sm:w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -148,21 +148,29 @@ export default function HomeView({ showToast }) {
         </p>
       </div>
 
-      {/* Modern Filter Categories */}
-      <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-6 sm:mb-8 animate-fade-in-up delay-100 relative z-20">
-        {categories.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setActiveCategory(cat)}
-            className={`px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl text-[10px] sm:text-sm font-semibold tracking-wide transition-all duration-300 ${
-              activeCategory === cat 
-                ? 'bg-white text-black shadow-[0_0_30px_rgba(255,255,255,0.3)] scale-105' 
-                : 'bg-white/[0.02] backdrop-blur-md text-gray-400 hover:bg-white/[0.08] hover:text-white border border-white/[0.05]'
-            }`}
-          >
-            {cat}
-          </button>
-        ))}
+      {/* Sleek Modern Tab Bar Component */}
+      <div className="flex items-center justify-start sm:justify-center overflow-x-auto custom-scrollbar gap-1.5 sm:gap-2 p-1.5 mb-8 sm:mb-10 bg-[#121216]/90 backdrop-blur-xl border border-white/[0.06] rounded-2xl max-w-fit mx-auto relative z-20 shadow-2xl">
+        {categories.map((cat) => {
+          const count = cat === "All" ? dummyTools.length : dummyTools.filter(t => t.cat.toLowerCase() === cat.toLowerCase()).length;
+          const isActive = activeCategory === cat;
+
+          return (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold tracking-wide transition-all duration-300 whitespace-nowrap shrink-0 ${
+                isActive 
+                  ? 'bg-indigo-600 text-white shadow-[0_0_25px_rgba(79,70,229,0.4)] scale-100' 
+                  : 'text-gray-400 hover:text-white hover:bg-white/[0.04]'
+              }`}
+            >
+              <span>{cat}</span>
+              <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${isActive ? 'bg-indigo-500/50 text-white' : 'bg-white/5 text-gray-500'}`}>
+                {count}
+              </span>
+            </button>
+          );
+        })}
       </div>
 
       {/* Tools Grid */}
